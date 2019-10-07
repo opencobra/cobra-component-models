@@ -40,11 +40,15 @@ class CustomBase(TimestampMixin):
     Attributes
     ----------
     id : int
-        The auto-incrementing primary key in the table.
+        The auto-incrementing, integer, primary key in the table.
 
     """
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+
+    def __repr__(self):
+        """Return a string representation of the object."""
+        return f"{type(self).__name__}(id={self.id})"
 
 
 Base = declarative_base(cls=CustomBase)
