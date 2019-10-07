@@ -21,17 +21,15 @@
 from sqlalchemy import Column, ForeignKey, Integer
 
 from .base import Base
-from .mixin import AnnotationMixin, TimestampMixin
+from .mixin import AnnotationMixin
 
 
-class CompoundAnnotation(AnnotationMixin, TimestampMixin, Base):
+class CompoundAnnotation(AnnotationMixin, Base):
     """
     Define a compound annotation ORM model.
 
     Attributes
     ----------
-    id : int
-        The primary key in the table.
     compound_id : int
         The compound being annotated.
 
@@ -39,7 +37,6 @@ class CompoundAnnotation(AnnotationMixin, TimestampMixin, Base):
 
     __tablename__ = "compound_annotations"
 
-    id: int = Column(Integer, primary_key=True)
     compound_id: int = Column(Integer, ForeignKey("compounds.id"), nullable=False)
 
     def __repr__(self):

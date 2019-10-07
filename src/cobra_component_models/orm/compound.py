@@ -34,23 +34,19 @@ from sqlalchemy.orm import relationship
 
 from . import CompoundAnnotation, CompoundName
 from .base import Base
-from .mixin import TimestampMixin
 
 
-class Compound(TimestampMixin, Base):
+class Compound(Base):
     """
     Define a compound ORM model.
 
     Attributes
     ----------
-    id : int
-        The primary key in the table.
 
     """
 
     __tablename__ = "compounds"
 
-    id: int = Column(Integer, primary_key=True)
     inchi: Optional[str] = Column(String, nullable=True, index=True)
     inchi_key: Optional[str] = Column(String(27), nullable=True, index=True)
     smiles: Optional[str] = Column(String, nullable=True, index=True)

@@ -27,7 +27,24 @@
 """Provide the declarative base class for ORM models."""
 
 
+from sqlalchemy import Column, Integer
 from sqlalchemy.ext.declarative import declarative_base
 
+from .mixin import TimestampMixin
 
-Base = declarative_base()
+
+class CustomBase(TimestampMixin):
+    """
+    Define a declarative base class with timestamps for ORM models.
+
+    Attributes
+    ----------
+    id : int
+        The auto-incrementing primary key in the table.
+
+    """
+
+    id = Column(Integer, primary_key=True)
+
+
+Base = declarative_base(cls=CustomBase)

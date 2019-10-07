@@ -24,10 +24,9 @@ from sqlalchemy import Column, Integer, String, exists
 
 from .. import data
 from .base import Base
-from .mixin import TimestampMixin
 
 
-class BiologyQualifier(TimestampMixin, Base):
+class BiologyQualifier(Base):
     """
     Define a BioModels biology qualifier ORM model.
 
@@ -35,8 +34,6 @@ class BiologyQualifier(TimestampMixin, Base):
 
     Attributes
     ----------
-    id : int
-        The integer primary key in the table.
     qualifier : str
         The text value of the qualifier.
 
@@ -44,7 +41,6 @@ class BiologyQualifier(TimestampMixin, Base):
 
     __tablename__ = "biology_qualifiers"
 
-    id: int = Column(Integer, primary_key=True)
     qualifier: str = Column(String, nullable=False, index=True, unique=True)
 
     def __repr__(self) -> str:

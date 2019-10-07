@@ -19,17 +19,15 @@
 from sqlalchemy import Column, ForeignKey, Integer
 
 from .base import Base
-from .mixin import NameMixin, TimestampMixin
+from .mixin import NameMixin
 
 
-class CompoundName(NameMixin, TimestampMixin, Base):
+class CompoundName(NameMixin, Base):
     """
     Define a compound name ORM model.
 
     Attributes
     ----------
-    id : int
-        The primary key in the table.
     compound_id : int
         The compound being named.
 
@@ -37,7 +35,6 @@ class CompoundName(NameMixin, TimestampMixin, Base):
 
     __tablename__ = "compound_names"
 
-    id: int = Column(Integer, primary_key=True, autoincrement=True)
     compound_id: int = Column(Integer, ForeignKey("compounds.id"), nullable=False)
 
     def __repr__(self):

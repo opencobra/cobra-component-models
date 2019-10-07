@@ -34,17 +34,14 @@ from sqlalchemy import Boolean, Column, Integer, String
 from sqlalchemy.orm import reconstructor, validates
 
 from .base import Base
-from .mixin import TimestampMixin
 
 
-class Namespace(TimestampMixin, Base):
+class Namespace(Base):
     r"""
     Define a MIRIAM compliant Identifiers.org namespace ORM model.
 
     Attributes
     ----------
-    id : int
-        The primary key in the table.
     miriam_id : str
         The MIRIAM namespace identifier for itself, e.g., MIR:00000567.
     prefix : str
@@ -64,7 +61,6 @@ class Namespace(TimestampMixin, Base):
 
     __tablename__ = "namespaces"
 
-    id: int = Column(Integer, primary_key=True)
     miriam_id: str = Column(String(12), nullable=False, index=True, unique=True)
     # The currently longest prefix on Identifiers.org is 22.
     prefix: str = Column(String(22), nullable=False, index=True, unique=True)
