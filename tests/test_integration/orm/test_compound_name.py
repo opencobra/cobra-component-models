@@ -13,11 +13,17 @@
 # limitations under the License.
 
 
-"""Provide SQLAlchemy ORM models for storing components."""
+"""Expect that compound name functions as advertised."""
 
 
-from .base import Base
-from .biology_qualifier import BiologyQualifier
-from .namespace import Namespace
-from .compound_annotation import CompoundAnnotation
-from .compound_name import CompoundName
+import pytest
+
+from cobra_component_models.orm import CompoundName
+
+
+@pytest.mark.parametrize("attributes", [{"name": "water"}])
+def test_init(attributes):
+    """Expect that an object can be instantiated with the right attributes."""
+    instance = CompoundName(**attributes)
+    for attr, value in attributes.items():
+        assert getattr(instance, attr) == value
