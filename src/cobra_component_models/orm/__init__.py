@@ -19,3 +19,4 @@
 from .base import Base
 from .biology_qualifier import BiologyQualifier
 from .namespace import Namespace
+from .compound_annotation import CompoundAnnotation
