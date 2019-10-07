@@ -59,12 +59,14 @@ class AnnotationMixin:
     def qualifier(cls):
         return relationship("BiologyQualifier")
 
-    @validates("identifier")
-    def validate_accession(self, _, identifier: str):
-        """Use the namespace's pattern to validate the identifier."""
-        if self.namespace.compiled_pattern.match(identifier) is None:
-            logger.warning(
-                f"Identifier '{identifier}' does not match "
-                f"{self.namespace.name}'s pattern '{self.namespace.pattern}'."
-            )
-        return identifier
+    # FIXME: The namespace attribute is not initialized at the time of validation.
+    #  Try to use events maybe (https://docs.sqlalchemy.org/en/13/orm/events.html#attribute-events)?
+    # @validates("identifier")
+    # def validate_identifier(self, _, identifier: str):
+    #     """Use the namespace's pattern to validate the identifier."""
+    #     if self.namespace.compiled_pattern.match(identifier) is None:
+    #         logger.warning(
+    #             f"Identifier '{identifier}' does not match "
+    #             f"{self.namespace.name}'s pattern '{self.namespace.pattern}'."
+    #         )
+    #     return identifier
