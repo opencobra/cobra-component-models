@@ -13,8 +13,4 @@
 # limitations under the License.
 
 
-"""Provide SQLAlchemy ORM models for storing components."""
-
-
-from .base import Base
-from .biology_qualifier import BiologyQualifier
+"""Provide raw data files."""
