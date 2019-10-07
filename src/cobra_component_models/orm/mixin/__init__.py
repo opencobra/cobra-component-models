@@ -17,3 +17,4 @@
 
 
 from .timestamp_mixin import TimestampMixin
+from .annotation_mixin import AnnotationMixin
