@@ -33,8 +33,8 @@ from typing import ClassVar, Optional, Pattern
 from sqlalchemy import Boolean, Column, Integer, String
 from sqlalchemy.orm import reconstructor, validates
 
+from . import TimestampMixin
 from .base import Base
-from .timestamp_mixin import TimestampMixin
 
 
 class Namespace(TimestampMixin, Base):

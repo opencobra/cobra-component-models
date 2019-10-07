@@ -13,10 +13,7 @@
 # limitations under the License.
 
 
-"""Provide SQLAlchemy ORM models for storing components."""
+"""Provide SQLAlchemy ORM mixins that define special columns."""
 
 
-from .mixin import TimestampMixin
-from .base import Base
-from .biology_qualifier import BiologyQualifier
-from .namespace import Namespace
+from .timestamp_mixin import TimestampMixin
