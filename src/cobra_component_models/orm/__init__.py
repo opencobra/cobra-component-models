@@ -21,3 +21,4 @@ from .biology_qualifier import BiologyQualifier
 from .namespace import Namespace
 from .compound_annotation import CompoundAnnotation
 from .compound_name import CompoundName
+from .compound import Compound
