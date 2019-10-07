@@ -23,8 +23,8 @@ from importlib.resources import open_text
 from sqlalchemy import Column, Integer, String, exists
 
 from .. import data
-from . import TimestampMixin
 from .base import Base
+from .mixin import TimestampMixin
 
 
 class BiologyQualifier(TimestampMixin, Base):

@@ -16,7 +16,6 @@
 """Provide SQLAlchemy ORM models for storing components."""
 
 
-from .mixin import TimestampMixin
 from .base import Base
 from .biology_qualifier import BiologyQualifier
 from .namespace import Namespace
