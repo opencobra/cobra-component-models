@@ -14,3 +14,6 @@
 
 
 """Provide pydantic classes for (de-)serialization of components."""
+
+
+from .sbase_model import SBaseModel
