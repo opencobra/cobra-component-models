@@ -33,6 +33,9 @@ class Reaction(Base):
 
     Attributes
     ----------
+    notes : str, optional
+    names : list of cobra_component_models.orm.ReactionName, optional
+    annotation : list of cobra_component_models.orm.ReactionAnnotation, optional
 
     """
 
