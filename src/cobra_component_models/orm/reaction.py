@@ -4,7 +4,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     https://www.apache.org/licenses/LICENSE-2.0
+#    https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,19 +13,32 @@
 # limitations under the License.
 
 
-"""Provide SQLAlchemy ORM models for storing components."""
+"""Provide a reaction ORM model."""
 
+
+from typing import List, Optional
+
+from sqlalchemy import Column, String
+from sqlalchemy.orm import relationship
 
 from .base import Base
-from .biology_qualifier import BiologyQualifier
-from .namespace import Namespace
-from .compound_annotation import CompoundAnnotation
-from .compound_name import CompoundName
-from .compound import Compound
-from .compartment_annotation import CompartmentAnnotation
-from .compartment_name import CompartmentName
-from .compartment import Compartment
+from .participant import Participant
 from .reaction_annotation import ReactionAnnotation
 from .reaction_name import ReactionName
-from .participant import Participant
-from .reaction import Reaction
+
+
+class Reaction(Base):
+    """
+    Define a reaction ORM model.
+
+    Attributes
+    ----------
+
+    """
+
+    __tablename__ = "reactions"
+
+    notes: Optional[str] = Column(String, nullable=True)
+    names: List[ReactionName] = relationship("ReactionName")
+    annotation: List[ReactionAnnotation] = relationship("ReactionAnnotation")
+    participants: List[Participant] = relationship("Participant")
