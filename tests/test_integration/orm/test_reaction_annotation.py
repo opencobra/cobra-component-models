@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-"""Expect that reaction annotations function as advertised."""
+"""Expect that reaction annotations function as designed."""
 
 
 import pytest

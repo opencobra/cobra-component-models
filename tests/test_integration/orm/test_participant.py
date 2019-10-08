@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-"""Expect that participants function as advertised."""
+"""Expect that participants function as designed."""
 
 
 import pytest

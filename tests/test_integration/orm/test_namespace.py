@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-"""Expect that namespaces function as advertised."""
+"""Expect that namespaces function as designed."""
 
 
 import re

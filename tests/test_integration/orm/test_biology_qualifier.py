@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-"""Expect that biology qualifiers function as advertised."""
+"""Expect that biology qualifiers function as designed."""
 
 
 from importlib.resources import open_text

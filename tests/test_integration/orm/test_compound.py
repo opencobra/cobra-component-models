@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-"""Expect that compounds function as advertised."""
+"""Expect that compounds function as designed."""
 
 
 import pytest

@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-"""Expect that compound annotations function as advertised."""
+"""Expect that compound annotations function as designed."""
 
 
 import pytest

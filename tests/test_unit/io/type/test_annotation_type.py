@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-"""Expect that annotation types function as advertised."""
+"""Expect that annotation types function as designed."""
 
 
 from importlib.resources import open_text

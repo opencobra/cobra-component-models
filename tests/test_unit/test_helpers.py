@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-"""Ensure the expected outcomes of helper functions."""
+"""Expect that helpers function as designed."""
 
 
 import cobra_component_models.helpers as helpers

@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-"""Expect that compartment annotations function as advertised."""
+"""Expect that compartment annotations function as designed."""
 
 
 import pytest
