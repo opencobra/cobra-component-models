@@ -38,8 +38,10 @@ class NameMixin:
 
     @declared_attr
     def namespace_id(cls):
+        """Defer the namespace id field instantiation."""
         return Column(Integer, ForeignKey("namespaces.id"), nullable=False)
 
     @declared_attr
     def namespace(cls):
+        """Defer the namespace field instantiation."""
         return relationship("Namespace")
