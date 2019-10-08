@@ -38,6 +38,7 @@ class CompartmentName(NameMixin, Base):
     compartment_id: int = Column(Integer, ForeignKey("compartments.id"), nullable=False)
 
     def __repr__(self):
+        """Return a string representation of the object."""
         return (
             f"{type(self).__name__}(compartment={self.compartment_id}, "
             f"name={self.name}, "
