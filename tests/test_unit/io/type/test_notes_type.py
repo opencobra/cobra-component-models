@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-"""Expect that notes types function as designed."""
+"""Expect that the notes type functions as designed."""
 
 
 import pytest
