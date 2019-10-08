@@ -19,3 +19,4 @@
 from .sbase_model import SBaseModel
 from .compartment_model import CompartmentModel
 from .compound_model import CompoundModel
+from .reaction_model import ReactionModel
