@@ -32,6 +32,7 @@ class Participant(Base):
 
     Attributes
     ----------
+    stoichiometry : str
 
     """
 
