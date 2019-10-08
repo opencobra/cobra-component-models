@@ -40,6 +40,7 @@ class CompartmentAnnotation(AnnotationMixin, Base):
     )
 
     def __repr__(self):
+        """Return a string representation of the object."""
         return (
             f"{type(self).__name__}(compartment={self.compartment_id}, "
             f"identifier={self.identifier}, "
