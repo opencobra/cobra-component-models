@@ -36,8 +36,12 @@ COBRA Component Models
 
 .. summary-start
 
-SQLAlchemy ORM and pydantic data models for SQL storage and JSON serialization of COBRA 
-components such as reactions, compounds, and compartments.
+Provide SQLAlchemy ORM and pydantic data models for
+SQL storage and serialization of COBRA components such as reactions, compounds,
+and compartments. They are loosely modeled after corresponding classes from the
+`SBML Level 3 Version 2 <http://sbml.org/Documents/Specifications>`_
+specification.  The data models are primarily intended for web services but
+other applications may benfit from these, too.
 
 Install
 =======
@@ -47,6 +51,12 @@ It's as simple as:
 .. code-block:: console
 
     pip install cobra-component-models
+
+Usage
+=====
+
+For now please take a look at the various class definitions and test cases to 
+understand how to use the provided models.
 
 Copyright
 =========
