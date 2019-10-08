@@ -32,6 +32,9 @@ class Compartment(Base):
 
     Attributes
     ----------
+    notes : str, optional
+    names : list of cobra_component_models.orm.CompoundName, optional
+    annotation : list of cobra_component_models.orm.CompoundAnnotation, optional
 
     """
 
