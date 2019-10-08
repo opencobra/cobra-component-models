@@ -39,11 +39,12 @@ class DummyModel(BaseModel):
     "attributes",
     [
         pytest.param(
-            {"annotation": ["single"]}, marks=pytest.mark.raises(exception=ValueError)
+            {"annotation": ["single"]},
+            marks=pytest.mark.raises(exception=ValueError, message="consist"),
         ),
         pytest.param(
             {"annotation": ["wrong", "single"]},
-            marks=pytest.mark.raises(exception=ValueError),
+            marks=pytest.mark.raises(exception=ValueError, message="valid"),
         ),
     ],
 )
