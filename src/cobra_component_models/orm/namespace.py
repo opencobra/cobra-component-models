@@ -32,7 +32,7 @@ from __future__ import annotations
 import re
 from typing import ClassVar, Dict, Optional, Pattern
 
-from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy import Boolean, Column, String
 from sqlalchemy.orm import reconstructor, validates
 
 from .base import Base
