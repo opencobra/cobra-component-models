@@ -19,8 +19,9 @@
 from __future__ import annotations
 
 from importlib.resources import open_text
+from typing import Dict
 
-from sqlalchemy import Column, Integer, String, exists
+from sqlalchemy import Column, String, exists
 
 from .. import data
 from .base import Base
@@ -59,3 +60,8 @@ class BiologyQualifier(Base):
             ):
                 session.add(cls(qualifier=qual))
         session.commit()
+
+    @classmethod
+    def get_map(cls, session) -> Dict[str, BiologyQualifier]:
+        """Extract a mapping from biology qualifiers to ORM instances."""
+        return {qualifier.qualifier: qualifier for qualifier in session.query(cls)}
