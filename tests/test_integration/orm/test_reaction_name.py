@@ -18,7 +18,7 @@
 
 import pytest
 
-from cobra_component_models.orm import ReactionName, Namespace
+from cobra_component_models.orm import Namespace, ReactionName
 
 
 @pytest.mark.parametrize("attributes", [{"name": "alcohol dehydrogenase"}])
