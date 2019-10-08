@@ -38,6 +38,7 @@ class CompoundName(NameMixin, Base):
     compound_id: int = Column(Integer, ForeignKey("compounds.id"), nullable=False)
 
     def __repr__(self):
+        """Return a string representation of the object."""
         return (
             f"{type(self).__name__}(compound={self.compound_id}, "
             f"name={self.name}, "
