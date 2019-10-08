@@ -18,15 +18,13 @@
 
 import pytest
 
-from cobra_component_models.orm import ReactionAnnotation, Namespace
+from cobra_component_models.orm import Namespace, ReactionAnnotation
 
 
 @pytest.mark.parametrize("attributes", [{"identifier": "CHEBI:12345"}])
 def test_init(attributes):
     """Expect that an object can be instantiated with the right attributes."""
-    namespace = Namespace(
-        miriam_id="MIR:00000082", prefix="rhea", pattern=r"^\d{5}$"
-    )
+    namespace = Namespace(miriam_id="MIR:00000082", prefix="rhea", pattern=r"^\d{5}$")
     instance = ReactionAnnotation(namespace=namespace, **attributes)
     for attr, value in attributes.items():
         assert getattr(instance, attr) == value

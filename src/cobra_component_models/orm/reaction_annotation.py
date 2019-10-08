@@ -18,8 +18,8 @@
 
 from sqlalchemy import Column, ForeignKey, Integer
 
-from .mixin import AnnotationMixin
 from .base import Base
+from .mixin import AnnotationMixin
 
 
 class ReactionAnnotation(AnnotationMixin, Base):

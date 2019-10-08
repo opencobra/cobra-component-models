@@ -24,9 +24,7 @@ from cobra_component_models.orm import CompartmentAnnotation, Namespace
 @pytest.mark.parametrize("attributes", [{"identifier": "GO:0005737"}])
 def test_init(attributes):
     """Expect that an object can be instantiated with the right attributes."""
-    namespace = Namespace(
-        miriam_id="MIR:00000022", prefix="go", pattern=r"^GO:\d{7}$"
-    )
+    namespace = Namespace(miriam_id="MIR:00000022", prefix="go", pattern=r"^GO:\d{7}$")
     instance = CompartmentAnnotation(namespace=namespace, **attributes)
     for attr, value in attributes.items():
         assert getattr(instance, attr) == value

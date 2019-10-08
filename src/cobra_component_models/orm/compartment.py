@@ -39,6 +39,4 @@ class Compartment(Base):
 
     notes: Optional[str] = Column(String, nullable=True)
     names: List[CompartmentName] = relationship("CompartmentName")
-    annotation: List[CompartmentAnnotation] = relationship(
-        "CompartmentAnnotation"
-    )
+    annotation: List[CompartmentAnnotation] = relationship("CompartmentAnnotation")
