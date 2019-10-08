@@ -29,7 +29,7 @@
 
 from typing import List, Optional
 
-from sqlalchemy import Column, Float, Integer, String
+from sqlalchemy import Column, Float, String
 from sqlalchemy.orm import relationship
 
 from . import CompoundAnnotation, CompoundName
@@ -42,6 +42,14 @@ class Compound(Base):
 
     Attributes
     ----------
+    inchi : str, optional
+    inchi_key : str, optional
+    smiles : str, optional
+    charge : float, optional
+    chemical_formula : str, optional
+    notes : str, optional
+    names : list of cobra_component_models.orm.CompoundName, optional
+    annotation : list of cobra_component_models.orm.CompoundAnnotation, optional
 
     """
 
