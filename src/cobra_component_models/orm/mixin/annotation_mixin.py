@@ -20,7 +20,7 @@ import logging
 
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.orm import relationship, validates
+from sqlalchemy.orm import relationship
 
 
 logger = logging.getLogger(__name__)
@@ -45,22 +45,27 @@ class AnnotationMixin:
 
     @declared_attr
     def namespace_id(cls):
+        """Defer the namespace id field instantiation."""
         return Column(Integer, ForeignKey("namespaces.id"), nullable=False)
 
     @declared_attr
     def namespace(cls):
+        """Defer the namespace field instantiation."""
         return relationship("Namespace")
 
     @declared_attr
     def qualifier_id(cls):
+        """Defer the biology qualifier id field instantiation."""
         return Column(Integer, ForeignKey("biology_qualifiers.id"), nullable=False)
 
     @declared_attr
     def qualifier(cls):
+        """Defer the biology qualifier field instantiation."""
         return relationship("BiologyQualifier")
 
     # FIXME: The namespace attribute is not initialized at the time of validation.
-    #  Try to use events maybe (https://docs.sqlalchemy.org/en/13/orm/events.html#attribute-events)?
+    #  Try to use events maybe
+    #  (https://docs.sqlalchemy.org/en/13/orm/events.html#attribute-events)?
     # @validates("identifier")
     # def validate_identifier(self, _, identifier: str):
     #     """Use the namespace's pattern to validate the identifier."""
