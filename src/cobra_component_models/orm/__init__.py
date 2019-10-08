@@ -25,3 +25,4 @@ from .compound import Compound
 from .compartment_annotation import CompartmentAnnotation
 from .compartment_name import CompartmentName
 from .compartment import Compartment
+from .reaction_annotation import ReactionAnnotation
