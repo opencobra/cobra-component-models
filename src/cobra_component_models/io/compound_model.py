@@ -4,7 +4,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     https://www.apache.org/licenses/LICENSE-2.0
+#    https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,9 +13,18 @@
 # limitations under the License.
 
 
-"""Provide pydantic classes for (de-)serialization of components."""
+"""Provide a pydantic compound data model."""
 
+
+from typing import Optional
+
+from pydantic import Schema
 
 from .sbase_model import SBaseModel
-from .compartment_model import CompartmentModel
-from .compound_model import CompoundModel
+
+
+class CompoundModel(SBaseModel):
+    """Define a pydantic compound data model."""
+
+    charge: Optional[float] = Schema(None)
+    chemical_formula: Optional[str] = Schema(None, alias="chemicalFormula")
