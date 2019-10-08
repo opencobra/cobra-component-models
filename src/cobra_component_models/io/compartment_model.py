@@ -4,7 +4,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     https://www.apache.org/licenses/LICENSE-2.0
+#    https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,8 +13,13 @@
 # limitations under the License.
 
 
-"""Provide pydantic classes for (de-)serialization of components."""
+"""Provide a pydantic compartment data model."""
 
 
 from .sbase_model import SBaseModel
-from .compartment_model import CompartmentModel
+
+
+class CompartmentModel(SBaseModel):
+    """Define a pydantic compartment data model."""
+
+    pass
