@@ -22,4 +22,4 @@ from .sbase_model import SBaseModel
 class CompartmentModel(SBaseModel):
     """Define a pydantic compartment data model."""
 
-    pass
+    id: str

@@ -26,5 +26,6 @@ from .sbase_model import SBaseModel
 class CompoundModel(SBaseModel):
     """Define a pydantic compound data model."""
 
+    id: str
     charge: Optional[float] = Schema(None)
     chemical_formula: Optional[str] = Schema(None, alias="chemicalFormula")

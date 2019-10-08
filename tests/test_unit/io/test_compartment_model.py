@@ -22,8 +22,8 @@ from cobra_component_models.io import CompartmentModel
 
 
 def test_empty_init():
-    """Expect that a compartment model can be instantiated without arguments."""
-    obj = CompartmentModel()
+    """Expect that a compartment model can be instantiated without default arguments."""
+    obj = CompartmentModel(id="1")
     assert obj.sbo_term is None
     assert obj.notes is None
     assert obj.names == []
@@ -33,10 +33,10 @@ def test_empty_init():
 @pytest.mark.parametrize(
     "attributes",
     [
-        {"sbo_term": "SBO:007"},
-        {"notes": "bla bla bla"},
-        {"names": ["one", "two", "three"]},
-        {"annotation": {"prefix": [("is", "one"), ("is", "two")]}},
+        {"id": "1", "sbo_term": "SBO:007"},
+        {"id": "1", "notes": "bla bla bla"},
+        {"id": "1", "names": ["one", "two", "three"]},
+        {"id": "1", "annotation": {"prefix": [("is", "one"), ("is", "two")]}},
     ],
 )
 def test_init(attributes):

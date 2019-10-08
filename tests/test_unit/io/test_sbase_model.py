@@ -24,6 +24,7 @@ from cobra_component_models.io import SBaseModel
 def test_empty_init():
     """Expect that an SBase model can be instantiated without arguments."""
     obj = SBaseModel()
+    assert obj.id is None
     assert obj.sbo_term is None
     assert obj.notes is None
     assert obj.names == []
@@ -33,6 +34,7 @@ def test_empty_init():
 @pytest.mark.parametrize(
     "attributes",
     [
+        {"id": "1"},
         {"sbo_term": "SBO:007"},
         {"notes": "bla bla bla"},
         {"names": ["one", "two", "three"]},

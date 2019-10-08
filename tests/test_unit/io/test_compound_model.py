@@ -22,8 +22,8 @@ from cobra_component_models.io import CompoundModel
 
 
 def test_empty_init():
-    """Expect that a compound model can be instantiated without arguments."""
-    obj = CompoundModel()
+    """Expect that a compound model can be instantiated without default arguments."""
+    obj = CompoundModel(id="1")
     assert obj.charge is None
     assert obj.chemical_formula is None
     assert obj.sbo_term is None
@@ -35,12 +35,12 @@ def test_empty_init():
 @pytest.mark.parametrize(
     "attributes",
     [
-        {"charge": -2.0},
-        {"chemical_formula": "C2H6O"},
-        {"sbo_term": "SBO:007"},
-        {"notes": "bla bla bla"},
-        {"names": ["one", "two", "three"]},
-        {"annotation": {"prefix": [("is", "one"), ("is", "two")]}},
+        {"id": "1", "charge": -2.0},
+        {"id": "1", "chemical_formula": "C2H6O"},
+        {"id": "1", "sbo_term": "SBO:007"},
+        {"id": "1", "notes": "bla bla bla"},
+        {"id": "1", "names": ["one", "two", "three"]},
+        {"id": "1", "annotation": {"prefix": [("is", "one"), ("is", "two")]}},
     ],
 )
 def test_init(attributes):
