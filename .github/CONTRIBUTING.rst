@@ -10,7 +10,7 @@ You can contribute in many ways:
 Report Bugs
 ===========
 
-Report bugs at https://github.com/Midnighter/cobra-component-models/issues.
+Report bugs at https://github.com/opencobra/cobra-component-models/issues.
 
 If you are reporting a bug, please follow the template guide lines. The more 
 detailed your report, the easier and thus faster we can help you.
@@ -38,7 +38,7 @@ Submit Feedback
 ===============
 
 The best way to send feedback is to file an issue at
-https://github.com/Midnighter/cobra-component-models/issues.
+https://github.com/opencobra/cobra-component-models/issues.
 
 If you are proposing a feature:
 
@@ -53,7 +53,7 @@ Get Started!
 Ready to contribute? Here's how to set up cobra-component-models for
 local development.
 
-1. Fork the https://github.com/Midnighter/cobra-component-models
+1. Fork the https://github.com/opencobra/cobra-component-models
    repository on GitHub.
 2. Clone your fork locally
 

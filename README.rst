@@ -15,15 +15,15 @@ COBRA Component Models
    :alt: Apache Software License Version 2.0
 
 .. image:: https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg
-   :target: https://github.com/Midnighter/cobra-component-models/blob/master/.github/CODE_OF_CONDUCT.md
+   :target: https://github.com/opencobra/cobra-component-models/blob/master/.github/CODE_OF_CONDUCT.md
    :alt: Code of Conduct
 
-.. image:: https://img.shields.io/travis/Midnighter/cobra-component-models/master.svg?label=Travis%20CI
-   :target: https://travis-ci.org/Midnighter/cobra-component-models
+.. image:: https://img.shields.io/travis/opencobra/cobra-component-models/master.svg?label=Travis%20CI
+   :target: https://travis-ci.org/opencobra/cobra-component-models
    :alt: Travis CI
 
-.. image:: https://codecov.io/gh/Midnighter/cobra-component-models/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/Midnighter/cobra-component-models
+.. image:: https://codecov.io/gh/opencobra/cobra-component-models/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/opencobra/cobra-component-models
    :alt: Codecov
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg

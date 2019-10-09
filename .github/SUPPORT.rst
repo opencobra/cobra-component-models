@@ -2,5 +2,5 @@
 Support
 =======
 
-* cobra-component-models `gitter chat <https://gitter.im/Midnighter/cobra-component-models>`_
+* Please create a GitHub issue with your question https://github.com/opencobra/cobra-component-models/issues
 

@@ -19,7 +19,7 @@ branches:
 
 env:
   global:
-  - GITHUB_REPO=Midnighter/cobra-component-models
+  - GITHUB_REPO=opencobra/cobra-component-models
 
 stages:
 - test
