@@ -56,8 +56,12 @@ class CompoundSerializer:
         annotation = {}
         for ann in compound.annotation:
             annotation.setdefault(ann.namespace.prefix, []).append(
-                (ann.qualifier.qualifier, ann.identifier)
+                (ann.biology_qualifier.qualifier, ann.identifier)
             )
+        annotation["inchi"] = [("is", compound.inchi)]
+        annotation["inchikey"] = [("is", compound.inchi_key)]
+        # SMILES are not yet Identifiers.org conform.
+        annotation["smiles"] = [("is", compound.smiles)]
         return CompoundModel(
             id=str(compound.id),
             notes=compound.notes,
