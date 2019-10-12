@@ -20,7 +20,7 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from cobra_component_models.orm import Base
+from cobra_component_models.orm import Base, BiologyQualifier
 
 
 Session = sessionmaker()
@@ -62,3 +62,10 @@ def session(connection):
     finally:
         session.close()
         transaction.rollback()
+
+
+@pytest.fixture(scope="function")
+def biology_qualifiers(session):
+    """Return a map from biology qualifiers to model instances."""
+    BiologyQualifier.load(session)
+    return BiologyQualifier.get_map(session)
