@@ -16,18 +16,32 @@
 """Provide a compound serializer."""
 
 
+from typing import Dict
+
 from ..io import CompoundModel
-from ..orm import BiologyQualifier, Compound, Namespace
+from ..orm import (
+    BiologyQualifier,
+    Compound,
+    CompoundAnnotation,
+    CompoundName,
+    Namespace,
+)
 
 
 class CompoundSerializer:
     """Define a compound serializer."""
 
-    def __init__(self, session, **kwargs):
+    def __init__(
+        self,
+        session,
+        biology_qualifiers: Dict[str, BiologyQualifier],
+        namespaces: Dict[str, Namespace],
+        **kwargs
+    ):
         super().__init__(**kwargs)
         self.session = session
-        self.biology_qualifiers = BiologyQualifier.get_map(session)
-        self.namespaces = Namespace.get_map(session)
+        self.biology_qualifiers = biology_qualifiers
+        self.namespaces = namespaces
 
     def serialize(self, compound: Compound) -> CompoundModel:
         """
@@ -86,6 +100,26 @@ class CompoundSerializer:
             A corresponding compound ORM model.
 
         """
-        self.biology_qualifiers
-        self.namespaces
-        return Compound(**compound.dict())
+        cmpnd = Compound(
+            charge=compound.charge,
+            chemical_formula=compound.chemical_formula,
+            notes=compound.notes,
+        )
+        for structure in ["inchi", "inchikey", "smiles"]:
+            if structure in compound.annotation:
+                # Set the structure and remove it from the annotations for later use.
+                setattr(cmpnd, structure, compound.annotation.pop(structure)[0][1])
+        for name in compound.names:
+            cmpnd.names.append(CompoundName(name=name))
+        for prefix, annotations in compound.annotation.items():
+            namespace = self.namespaces[prefix]
+            for ann in annotations:
+                qualifier = self.biology_qualifiers[ann[0]]
+                cmpnd.annotation.append(
+                    CompoundAnnotation(
+                        identifier=ann[1],
+                        biology_qualifier=qualifier,
+                        namespace=namespace,
+                    )
+                )
+        return cmpnd
