@@ -54,12 +54,12 @@ class AnnotationMixin:
         return relationship("Namespace")
 
     @declared_attr
-    def qualifier_id(cls):
+    def biology_qualifier_id(cls):
         """Defer the biology qualifier id field instantiation."""
         return Column(Integer, ForeignKey("biology_qualifiers.id"), nullable=False)
 
     @declared_attr
-    def qualifier(cls):
+    def biology_qualifier(cls):
         """Defer the biology qualifier field instantiation."""
         return relationship("BiologyQualifier")
 
