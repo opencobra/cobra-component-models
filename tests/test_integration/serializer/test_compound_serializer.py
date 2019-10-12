@@ -35,50 +35,79 @@ def test_serialize_default_compound(session):
     assert obj.id == "1"
 
 
-def test_serialize_full_compound(session):
-    cmpd = Compound(charge=-3, chemical_formula="C2H6O", notes="bla bla bla")
+def test_serialize_full_compound(session, biology_qualifiers):
+    cmpd = Compound(
+        inchi="InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3",
+        inchi_key="LFQSCWFLJHTTHZ-UHFFFAOYSA-N",
+        smiles="CCO",
+        charge=0,
+        chemical_formula="C2H6O",
+        notes="bla bla bla",
+    )
     chebi = Namespace(miriam_id="MIR:00000002", prefix="chebi", pattern=r"^CHEBI:\d+$")
     cmpd.names = [
-        CompoundName(name=n, namespace=chebi) for n in ["one", "two", "three"]
+        CompoundName(name=n, namespace=chebi)
+        for n in ["ethanol", "Aethanol", "Alkohol"]
     ]
-    qual = BiologyQualifier(qualifier="is")
+    qual = biology_qualifiers["is"]
     cmpd.annotation = [
-        CompoundAnnotation(identifier=i, namespace=chebi, qualifier=qual)
+        CompoundAnnotation(identifier=i, namespace=chebi, biology_qualifier=qual)
         for i in ["CHEBI:16236", "CHEBI:44594", "CHEBI:42377"]
     ]
     session.add(cmpd)
     session.commit()
-    obj = CompoundSerializer(session).serialize(cmpd)
+    obj = CompoundSerializer(
+        session, BiologyQualifier.get_map(session), Namespace.get_map(session)
+    ).serialize(cmpd)
     assert obj.id == "1"
-    assert obj.charge == -3
+    assert obj.charge == 0
     assert obj.chemical_formula == "C2H6O"
     assert obj.notes == "bla bla bla"
-    assert obj.names == ["one", "two", "three"]
+    assert obj.names == ["ethanol", "Aethanol", "Alkohol"]
     assert obj.annotation == {
-        "chebi": [("is", "CHEBI:16236"), ("is", "CHEBI:44594"), ("is", "CHEBI:42377")]
+        "inchi": [("is", "InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3")],
+        "inchikey": [("is", "LFQSCWFLJHTTHZ-UHFFFAOYSA-N")],
+        "smiles": [("is", "CCO")],
+        "chebi": [("is", "CHEBI:16236"), ("is", "CHEBI:44594"), ("is", "CHEBI:42377")],
     }
 
 
-def test_deserialize_full_compound(session):
-    obj = CompoundModel(id="1")
-    cmpd = Compound(charge=-3, chemical_formula="C2H6O", notes="bla bla bla")
+def test_deserialize_full_compound(session, biology_qualifiers):
+    # Add namespace to database so that it can be used in validation later.
     chebi = Namespace(miriam_id="MIR:00000002", prefix="chebi", pattern=r"^CHEBI:\d+$")
-    cmpd.names = [
-        CompoundName(name=n, namespace=chebi) for n in ["one", "two", "three"]
-    ]
-    qual = BiologyQualifier(qualifier="is")
-    cmpd.annotation = [
-        CompoundAnnotation(identifier=i, namespace=chebi, qualifier=qual)
-        for i in ["CHEBI:16236", "CHEBI:44594", "CHEBI:42377"]
-    ]
+    session.add(chebi)
+    session.commit()
+    obj = CompoundModel(
+        **{
+            "id": "1",
+            "notes": "bla bla bla",
+            "names": ["ethanol", "Aethanol", "Alkohol"],
+            "annotation": {
+                "chebi": [
+                    ["is", "CHEBI:16236"],
+                    ["is", "CHEBI:44594"],
+                    ["is", "CHEBI:42377"],
+                ],
+                "inchi": [["is", "InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3"]],
+                "inchikey": [["is", "LFQSCWFLJHTTHZ-UHFFFAOYSA-N"]],
+                "smiles": [["is", "CCO"]],
+            },
+            "charge": 0.0,
+            "chemical_formula": "C2H6O",
+        }
+    )
+    cmpd = CompoundSerializer(
+        session, biology_qualifiers, Namespace.get_map(session)
+    ).deserialize(obj)
     session.add(cmpd)
     session.commit()
-    obj = CompoundSerializer(session).serialize(cmpd)
-    assert obj.id == "1"
-    assert obj.charge == -3
-    assert obj.chemical_formula == "C2H6O"
-    assert obj.notes == "bla bla bla"
-    assert obj.names == ["one", "two", "three"]
-    assert obj.annotation == {
-        "chebi": [("is", "CHEBI:16236"), ("is", "CHEBI:44594"), ("is", "CHEBI:42377")]
-    }
+    assert cmpd.inchi == "InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3"
+    assert cmpd.inchi_key == "LFQSCWFLJHTTHZ-UHFFFAOYSA-N"
+    assert cmpd.smiles == "CCO"
+    assert cmpd.charge == 0.0
+    assert cmpd.chemical_formula == "C2H6O"
+    assert cmpd.notes == "bla bla bla"
+    assert cmpd.names == ["ethanol", "Aethanol", "Alkohol"]
+    # assert cmpd.annotation == {
+    #     "chebi": [("is", "CHEBI:16236"), ("is", "CHEBI:44594"), ("is", "CHEBI:42377")]
+    # }
