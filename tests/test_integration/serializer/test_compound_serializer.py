@@ -18,7 +18,6 @@
 
 from cobra_component_models.io import CompoundModel
 from cobra_component_models.orm import (
-    BiologyQualifier,
     Compound,
     CompoundAnnotation,
     CompoundName,
