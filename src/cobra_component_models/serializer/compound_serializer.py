@@ -27,13 +27,13 @@ class CompoundSerializer(AbstractSerializer):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def serialize(self, compound: Compound) -> CompoundModel:
+    def serialize(self, component: Compound) -> CompoundModel:
         """
         Serialize a compound ORM model to a pydantic data model.
 
         Parameters
         ----------
-        compound : cobra_component_models.orm.Compound
+        component : cobra_component_models.orm.Compound
             The compound ORM model instance to be serialized.
 
         Returns
@@ -51,28 +51,28 @@ class CompoundSerializer(AbstractSerializer):
         .. [1] https://docs.sqlalchemy.org/en/13/glossary.html#term-n-plus-one-problem
 
         """
-        names = self.serialize_names(compound.names)
-        annotation = self.serialize_annotation(compound.annotation)
-        annotation["inchi"] = [("is", compound.inchi)]
-        annotation["inchikey"] = [("is", compound.inchi_key)]
+        names = self.serialize_names(component.names)
+        annotation = self.serialize_annotation(component.annotation)
+        annotation["inchi"] = [("is", component.inchi)]
+        annotation["inchikey"] = [("is", component.inchi_key)]
         # SMILES are not yet Identifiers.org conform.
-        annotation["smiles"] = [("is", compound.smiles)]
+        annotation["smiles"] = [("is", component.smiles)]
         return CompoundModel(
-            id=str(compound.id),
-            notes=compound.notes,
-            charge=compound.charge,
-            chemicalFormula=compound.chemical_formula,
+            id=str(component.id),
+            notes=component.notes,
+            charge=component.charge,
+            chemicalFormula=component.chemical_formula,
             names=names,
             annotation=annotation,
         )
 
-    def deserialize(self, compound: CompoundModel) -> Compound:
+    def deserialize(self, component_model: CompoundModel) -> Compound:
         """
         Deserialize a pydantic compound data model to an ORM model.
 
         Parameters
         ----------
-        compound : cobra_component_models.io.CompoundModel
+        component_model : cobra_component_models.io.CompoundModel
             The pydantic compound data model instance to be deserialized.
 
         Returns
@@ -81,19 +81,25 @@ class CompoundSerializer(AbstractSerializer):
             A corresponding compound ORM model.
 
         """
-        cmpnd = Compound(
-            charge=compound.charge,
-            chemical_formula=compound.chemical_formula,
-            notes=compound.notes,
+        compound = Compound(
+            charge=component_model.charge,
+            chemical_formula=component_model.chemical_formula,
+            notes=component_model.notes,
         )
         for structure in ["inchi", "smiles"]:
-            if structure in compound.annotation:
+            if structure in component_model.annotation:
                 # Set the structure and remove it from the annotations for later use.
-                setattr(cmpnd, structure, compound.annotation.pop(structure)[0][1])
-        if "inchikey" in compound.annotation:
-            setattr(cmpnd, "inchi_key", compound.annotation.pop("inchikey")[0][1])
-        cmpnd.names.extend(self.deserialize_names(compound.names, CompoundName))
-        cmpnd.annotation.extend(
-            self.deserialize_annotation(compound.annotation, CompoundAnnotation)
+                setattr(
+                    compound, structure, component_model.annotation.pop(structure)[0][1]
+                )
+        if "inchikey" in component_model.annotation:
+            setattr(
+                compound, "inchi_key", component_model.annotation.pop("inchikey")[0][1]
+            )
+        compound.names.extend(
+            self.deserialize_names(component_model.names, CompoundName)
         )
-        return cmpnd
+        compound.annotation.extend(
+            self.deserialize_annotation(component_model.annotation, CompoundAnnotation)
+        )
+        return compound

@@ -46,7 +46,7 @@ class AbstractSerializer(ABC):
         self.namespaces = namespaces
 
     @abstractmethod
-    def serialize(self, orm_model: AbstractComponent) -> SBaseModel:
+    def serialize(self, component: AbstractComponent) -> SBaseModel:
         """Serialize an ORM model to a pydantic data model."""
         pass
 
@@ -70,7 +70,7 @@ class AbstractSerializer(ABC):
         return obj
 
     @abstractmethod
-    def deserialize(self, data_model: SBaseModel) -> AbstractComponent:
+    def deserialize(self, component_model: SBaseModel) -> AbstractComponent:
         """Deserialize a pydantic data model to an ORM model."""
         pass
 
