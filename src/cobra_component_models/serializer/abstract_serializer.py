@@ -21,7 +21,13 @@ from typing import Dict, List, Type
 
 from ..io import SBaseModel
 from ..io.type import AnnotationType
-from ..orm import Base, BiologyQualifier, Namespace
+from ..orm import (
+    AbstractComponent,
+    AbstractComponentAnnotation,
+    AbstractComponentName,
+    BiologyQualifier,
+    Namespace,
+)
 
 
 class AbstractSerializer(ABC):
@@ -40,11 +46,13 @@ class AbstractSerializer(ABC):
         self.namespaces = namespaces
 
     @abstractmethod
-    def serialize(self, orm_model: Base) -> SBaseModel:
+    def serialize(self, orm_model: AbstractComponent) -> SBaseModel:
         """Serialize an ORM model to a pydantic data model."""
         pass
 
-    def serialize_names(self, names: List[Base]) -> Dict[str, List[str]]:
+    def serialize_names(
+        self, names: List[AbstractComponentName]
+    ) -> Dict[str, List[str]]:
         """Serialize the component names."""
         obj = {}
         for name_model in names:
@@ -52,7 +60,7 @@ class AbstractSerializer(ABC):
         return obj
 
     def serialize_annotation(
-        self, annotation: List[Base]
+        self, annotation: List[AbstractComponentAnnotation]
     ) -> Dict[str, List[AnnotationType]]:
         obj = {}
         for ann in annotation:
@@ -62,13 +70,13 @@ class AbstractSerializer(ABC):
         return obj
 
     @abstractmethod
-    def deserialize(self, data_model: SBaseModel) -> Base:
+    def deserialize(self, data_model: SBaseModel) -> AbstractComponent:
         """Deserialize a pydantic data model to an ORM model."""
         pass
 
     def deserialize_names(
-        self, names_data: Dict[str, List[str]], orm_class: Type[Base]
-    ) -> List[Base]:
+        self, names_data: Dict[str, List[str]], orm_class: Type[AbstractComponentName]
+    ) -> List[AbstractComponentName]:
         result = []
         for prefix, names in names_data.items():
             namespace = self.namespaces[prefix]
@@ -77,8 +85,10 @@ class AbstractSerializer(ABC):
         return result
 
     def deserialize_annotation(
-        self, annotation_data: Dict[str, List[AnnotationType]], orm_class: Type[Base]
-    ) -> List[Base]:
+        self,
+        annotation_data: Dict[str, List[AnnotationType]],
+        orm_class: Type[AbstractComponentAnnotation],
+    ) -> List[AbstractComponentAnnotation]:
         result = []
         for prefix, annotations in annotation_data.items():
             namespace = self.namespaces[prefix]

@@ -16,5 +16,5 @@
 """Provide serialization classes for components."""
 
 
+from .abstract_serializer import AbstractSerializer
 from .compound_serializer import CompoundSerializer
-

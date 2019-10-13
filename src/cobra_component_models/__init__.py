@@ -19,7 +19,8 @@
 __author__ = "Moritz E. Beber"
 __email__ = "midnighter@posteo.net"
 from cobra_component_models._version import get_versions
-__version__ = get_versions()['version']
+
+__version__ = get_versions()["version"]
 del get_versions
 
 

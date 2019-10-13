@@ -19,13 +19,18 @@
 from .base import Base
 from .biology_qualifier import BiologyQualifier
 from .namespace import Namespace
-from .compound_annotation import CompoundAnnotation
-from .compound_name import CompoundName
-from .compound import Compound
 from .compartment_annotation import CompartmentAnnotation
 from .compartment_name import CompartmentName
 from .compartment import Compartment
+from .compound_annotation import CompoundAnnotation
+from .compound_name import CompoundName
+from .compound import Compound
 from .reaction_annotation import ReactionAnnotation
 from .reaction_name import ReactionName
 from .participant import Participant
 from .reaction import Reaction
+from .abstract_component import (
+    AbstractComponentAnnotation,
+    AbstractComponentName,
+    AbstractComponent,
+)
