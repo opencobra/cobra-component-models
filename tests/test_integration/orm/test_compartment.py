@@ -53,7 +53,7 @@ def test_annotation(session):
     qualifier = BiologyQualifier(qualifier="is")
     compartment.annotation.append(
         CompartmentAnnotation(
-            identifier="GO:0005737", namespace=namespace, qualifier=qualifier
+            identifier="GO:0005737", namespace=namespace, biology_qualifier=qualifier
         )
     )
     session.add(compartment)

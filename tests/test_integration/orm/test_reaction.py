@@ -54,7 +54,9 @@ def test_annotation(session):
     namespace = Namespace(miriam_id="MIR:00000082", prefix="rhea", pattern=r"^\d{5}$")
     qualifier = BiologyQualifier(qualifier="is")
     reaction.annotation.append(
-        ReactionAnnotation(identifier="25290", namespace=namespace, qualifier=qualifier)
+        ReactionAnnotation(
+            identifier="25290", namespace=namespace, biology_qualifier=qualifier
+        )
     )
     session.add(reaction)
     session.commit()
