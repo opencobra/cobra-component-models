@@ -31,7 +31,7 @@ def test_serialize_default_compound(session):
     cmpd = Compound()
     session.add(cmpd)
     session.commit()
-    obj = CompoundSerializer(session).serialize(cmpd)
+    obj = CompoundSerializer(session, {}, {}).serialize(cmpd)
     assert obj.id == "1"
 
 
