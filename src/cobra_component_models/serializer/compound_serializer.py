@@ -16,32 +16,16 @@
 """Provide a compound serializer."""
 
 
-from typing import Dict
-
 from ..io import CompoundModel
-from ..orm import (
-    BiologyQualifier,
-    Compound,
-    CompoundAnnotation,
-    CompoundName,
-    Namespace,
-)
+from ..orm import Compound, CompoundAnnotation, CompoundName
+from .abstract_serializer import AbstractSerializer
 
 
-class CompoundSerializer:
+class CompoundSerializer(AbstractSerializer):
     """Define a compound serializer."""
 
-    def __init__(
-        self,
-        session,
-        biology_qualifiers: Dict[str, BiologyQualifier],
-        namespaces: Dict[str, Namespace],
-        **kwargs
-    ):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.session = session
-        self.biology_qualifiers = biology_qualifiers
-        self.namespaces = namespaces
 
     def serialize(self, compound: Compound) -> CompoundModel:
         """
@@ -67,11 +51,8 @@ class CompoundSerializer:
         .. [1] https://docs.sqlalchemy.org/en/13/glossary.html#term-n-plus-one-problem
 
         """
-        annotation = {}
-        for ann in compound.annotation:
-            annotation.setdefault(ann.namespace.prefix, []).append(
-                (ann.biology_qualifier.qualifier, ann.identifier)
-            )
+        names = self.serialize_names(compound.names)
+        annotation = self.serialize_annotation(compound.annotation)
         annotation["inchi"] = [("is", compound.inchi)]
         annotation["inchikey"] = [("is", compound.inchi_key)]
         # SMILES are not yet Identifiers.org conform.
@@ -81,7 +62,7 @@ class CompoundSerializer:
             notes=compound.notes,
             charge=compound.charge,
             chemicalFormula=compound.chemical_formula,
-            names=[n.name for n in compound.names],
+            names=names,
             annotation=annotation,
         )
 
@@ -105,21 +86,14 @@ class CompoundSerializer:
             chemical_formula=compound.chemical_formula,
             notes=compound.notes,
         )
-        for structure in ["inchi", "inchikey", "smiles"]:
+        for structure in ["inchi", "smiles"]:
             if structure in compound.annotation:
                 # Set the structure and remove it from the annotations for later use.
                 setattr(cmpnd, structure, compound.annotation.pop(structure)[0][1])
-        for name in compound.names:
-            cmpnd.names.append(CompoundName(name=name))
-        for prefix, annotations in compound.annotation.items():
-            namespace = self.namespaces[prefix]
-            for ann in annotations:
-                qualifier = self.biology_qualifiers[ann[0]]
-                cmpnd.annotation.append(
-                    CompoundAnnotation(
-                        identifier=ann[1],
-                        biology_qualifier=qualifier,
-                        namespace=namespace,
-                    )
-                )
+        if "inchikey" in compound.annotation:
+            setattr(cmpnd, "inchi_key", compound.annotation.pop("inchikey")[0][1])
+        cmpnd.names.extend(self.deserialize_names(compound.names, CompoundName))
+        cmpnd.annotation.extend(
+            self.deserialize_annotation(compound.annotation, CompoundAnnotation)
+        )
         return cmpnd
