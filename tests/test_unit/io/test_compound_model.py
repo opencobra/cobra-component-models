@@ -28,7 +28,7 @@ def test_empty_init():
     assert obj.chemical_formula is None
     assert obj.sbo_term is None
     assert obj.notes is None
-    assert obj.names == []
+    assert obj.names == {}
     assert obj.annotation == {}
 
 
@@ -39,7 +39,7 @@ def test_empty_init():
         {"id": "1", "chemical_formula": "C2H6O"},
         {"id": "1", "sbo_term": "SBO:007"},
         {"id": "1", "notes": "bla bla bla"},
-        {"id": "1", "names": ["one", "two", "three"]},
+        {"id": "1", "names": {"synonyms": ["one", "two", "three"]}},
         {"id": "1", "annotation": {"prefix": [("is", "one"), ("is", "two")]}},
     ],
 )

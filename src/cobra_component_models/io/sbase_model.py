@@ -29,7 +29,7 @@ class SBaseModel(BaseModel):
     id: Optional[str] = None
     sbo_term: Optional[str] = Schema(None, alias="sboTerm")
     notes: Optional[NotesType] = None
-    names: List[str] = []
+    names: Dict[str, List[str]] = {}
     annotation: Dict[str, List[AnnotationType]] = {}
 
     class Config:

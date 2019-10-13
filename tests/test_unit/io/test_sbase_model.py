@@ -27,7 +27,7 @@ def test_empty_init():
     assert obj.id is None
     assert obj.sbo_term is None
     assert obj.notes is None
-    assert obj.names == []
+    assert obj.names == {}
     assert obj.annotation == {}
 
 
@@ -37,7 +37,7 @@ def test_empty_init():
         {"id": "1"},
         {"sbo_term": "SBO:007"},
         {"notes": "bla bla bla"},
-        {"names": ["one", "two", "three"]},
+        {"names": {"synonyms": ["one", "two", "three"]}},
         {"annotation": {"prefix": [("is", "one"), ("is", "two")]}},
     ],
 )
