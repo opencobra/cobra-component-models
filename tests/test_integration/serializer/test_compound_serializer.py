@@ -31,7 +31,9 @@ def test_serialize_default_compound(session):
     cmpd = Compound()
     session.add(cmpd)
     session.commit()
-    obj = CompoundSerializer(session, {}, {}).serialize(cmpd)
+    obj = CompoundSerializer(
+        session=session, namespaces={}, biology_qualifiers={}
+    ).serialize(cmpd)
     assert obj.id == "1"
 
 
@@ -57,13 +59,15 @@ def test_serialize_full_compound(session, biology_qualifiers):
     session.add(cmpd)
     session.commit()
     obj = CompoundSerializer(
-        session, BiologyQualifier.get_map(session), Namespace.get_map(session)
+        session=session,
+        biology_qualifiers=biology_qualifiers,
+        namespaces=Namespace.get_map(session),
     ).serialize(cmpd)
     assert obj.id == "1"
     assert obj.charge == 0
     assert obj.chemical_formula == "C2H6O"
     assert obj.notes == "bla bla bla"
-    assert obj.names == ["ethanol", "Aethanol", "Alkohol"]
+    assert obj.names == {"chebi": ["ethanol", "Aethanol", "Alkohol"]}
     assert obj.annotation == {
         "inchi": [("is", "InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3")],
         "inchikey": [("is", "LFQSCWFLJHTTHZ-UHFFFAOYSA-N")],
@@ -81,7 +85,7 @@ def test_deserialize_full_compound(session, biology_qualifiers):
         **{
             "id": "1",
             "notes": "bla bla bla",
-            "names": ["ethanol", "Aethanol", "Alkohol"],
+            "names": {"chebi": ["ethanol", "Aethanol", "Alkohol"]},
             "annotation": {
                 "chebi": [
                     ["is", "CHEBI:16236"],
@@ -93,11 +97,13 @@ def test_deserialize_full_compound(session, biology_qualifiers):
                 "smiles": [["is", "CCO"]],
             },
             "charge": 0.0,
-            "chemical_formula": "C2H6O",
+            "chemicalFormula": "C2H6O",
         }
     )
     cmpd = CompoundSerializer(
-        session, biology_qualifiers, Namespace.get_map(session)
+        session=session,
+        biology_qualifiers=biology_qualifiers,
+        namespaces=Namespace.get_map(session),
     ).deserialize(obj)
     session.add(cmpd)
     session.commit()
@@ -107,7 +113,12 @@ def test_deserialize_full_compound(session, biology_qualifiers):
     assert cmpd.charge == 0.0
     assert cmpd.chemical_formula == "C2H6O"
     assert cmpd.notes == "bla bla bla"
-    assert cmpd.names == ["ethanol", "Aethanol", "Alkohol"]
-    # assert cmpd.annotation == {
-    #     "chebi": [("is", "CHEBI:16236"), ("is", "CHEBI:44594"), ("is", "CHEBI:42377")]
-    # }
+    for name, expected in zip(cmpd.names, ["ethanol", "Aethanol", "Alkohol"]):
+        assert name.namespace.prefix == "chebi"
+        assert name.name == expected
+    for ann, expected in zip(
+        cmpd.annotation,
+        [("is", "CHEBI:16236"), ("is", "CHEBI:44594"), ("is", "CHEBI:42377")],
+    ):
+        assert ann.namespace.prefix == "chebi"
+        assert (ann.biology_qualifier.qualifier, ann.identifier) == expected
