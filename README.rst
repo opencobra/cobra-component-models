@@ -41,7 +41,7 @@ SQL storage and serialization of COBRA components such as reactions, compounds,
 and compartments. They are loosely modeled after corresponding classes from the
 `SBML Level 3 Version 2 <http://sbml.org/Documents/Specifications>`_
 specification.  The data models are primarily intended for web services but
-other applications may benfit from these, too.
+other applications may benefit from these, too.
 
 Install
 =======
