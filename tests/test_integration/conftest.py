@@ -81,13 +81,14 @@ def session(connection):
 
 @pytest.fixture(scope="function")
 def biology_qualifiers(session):
-    """Return a map from biology qualifiers to model instances."""
+    """Return a map from biology qualifiers to database instances."""
     BiologyQualifier.load(session)
     return BiologyQualifier.get_map(session)
 
 
 @pytest.fixture(scope="session")
 def namespaces_data():
+    """Return the namespaces data objects."""
     with (data_path / "namespaces.toml").open() as handle:
         namespaces = toml.load(handle)
     return namespaces
@@ -95,6 +96,7 @@ def namespaces_data():
 
 @pytest.fixture(scope="session")
 def compounds_data():
+    """Return the compounds data objects."""
     with (data_path / "compounds.toml").open() as handle:
         compounds = toml.load(handle)
     return compounds
@@ -102,6 +104,7 @@ def compounds_data():
 
 @pytest.fixture(scope="session")
 def compartments_data():
+    """Return the compartments data objects."""
     with (data_path / "compartments.toml").open() as handle:
         compartments = toml.load(handle)
     return compartments
@@ -109,6 +112,7 @@ def compartments_data():
 
 @pytest.fixture(scope="session")
 def reactions_data():
+    """Return the reactions data objects."""
     with (data_path / "reactions.toml").open() as handle:
         reactions = toml.load(handle)
     return reactions
@@ -116,7 +120,7 @@ def reactions_data():
 
 @pytest.fixture(scope="function")
 def namespaces(session, namespaces_data) -> Dict[str, Namespace]:
-    """Return a map from namespace prefixes to model instances."""
+    """Return a map from namespace prefix to database instance."""
     result = {}
     for prefix, data in namespaces_data.items():
         ns = Namespace(**data)
@@ -130,6 +134,7 @@ def namespaces(session, namespaces_data) -> Dict[str, Namespace]:
 def id2compartments(
     session, biology_qualifiers, namespaces, compartments_data
 ) -> Dict[str, Compartment]:
+    """Return a map from identifier to compartment database instance."""
     serializer = CompartmentSerializer(
         biology_qualifiers=biology_qualifiers, namespaces=namespaces
     )
@@ -145,6 +150,7 @@ def id2compartments(
 
 @pytest.fixture(scope="function")
 def compartments2id(id2compartments) -> Dict[Compartment, str]:
+    """Return a map from compartment database instance to identifier ."""
     return {c: i for i, c in id2compartments.items()}
 
 
@@ -152,6 +158,7 @@ def compartments2id(id2compartments) -> Dict[Compartment, str]:
 def id2compounds(
     session, biology_qualifiers, namespaces, compounds_data
 ) -> Dict[str, Compound]:
+    """Return a map from identifier to compound database instance."""
     serializer = CompoundSerializer(
         biology_qualifiers=biology_qualifiers, namespaces=namespaces
     )
@@ -167,4 +174,5 @@ def id2compounds(
 
 @pytest.fixture(scope="function")
 def compounds2id(id2compounds) -> Dict[Compound, str]:
+    """Return a map from compound database instance to identifier ."""
     return {c: i for i, c in id2compounds.items()}
