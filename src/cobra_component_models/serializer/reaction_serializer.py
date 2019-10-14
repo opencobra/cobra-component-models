@@ -64,11 +64,11 @@ class ReactionSerializer(AbstractSerializer):
         Warnings
         --------
         Please ensure that all relationships of the reaction object have been eagerly
-        loaded in order to avoid N+1 [1]_ problems that may easily occur here.
+        loaded in order to avoid :math:`N+1` [R1]_ problems that may easily occur here.
 
         References
         ----------
-        .. [1] https://docs.sqlalchemy.org/en/13/glossary.html#term-n-plus-one-problem
+        .. [R1] https://docs.sqlalchemy.org/en/13/glossary.html#term-n-plus-one-problem
 
         """
         names = self.serialize_names(component.names)

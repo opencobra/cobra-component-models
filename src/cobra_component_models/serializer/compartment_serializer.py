@@ -44,11 +44,11 @@ class CompartmentSerializer(AbstractSerializer):
         Warnings
         --------
         Please ensure that all relationships of the compartment object have been eagerly
-        loaded in order to avoid N+1 [1]_ problems that may easily occur here.
+        loaded in order to avoid :math:`N+1` [CC1]_ problems that may easily occur here.
 
         References
         ----------
-        .. [1] https://docs.sqlalchemy.org/en/13/glossary.html#term-n-plus-one-problem
+        .. [CC1] https://docs.sqlalchemy.org/en/13/glossary.html#term-n-plus-one-problem
 
         """
         names = self.serialize_names(component.names)
