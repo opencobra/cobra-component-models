@@ -21,10 +21,11 @@ import pytest
 from cobra_component_models.io import ReactionModel
 from cobra_component_models.orm import (
     Namespace,
+    Participant,
     Reaction,
     ReactionAnnotation,
     ReactionName,
-    Participant)
+)
 from cobra_component_models.serializer import ReactionSerializer
 
 
@@ -138,4 +139,3 @@ def test_deserialize_full_reaction(
         compartment_id = compartments2id[part.compartment]
         assert compartment_id == part_data["compartment"]
         assert part.stoichiometry == part_data["stoichiometry"]
-
