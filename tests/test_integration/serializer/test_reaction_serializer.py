@@ -33,9 +33,7 @@ def test_serialize_default_reaction(session):
     reaction = Reaction()
     session.add(reaction)
     session.commit()
-    obj = ReactionSerializer(
-        session=session, namespaces={}, biology_qualifiers={}
-    ).serialize(reaction)
+    obj = ReactionSerializer(namespaces={}, biology_qualifiers={}).serialize(reaction)
     assert obj.id == "1"
 
 
@@ -83,7 +81,6 @@ def test_serialize_full_reaction(
     session.add(reaction)
     session.commit()
     obj = ReactionSerializer(
-        session=session,
         biology_qualifiers=biology_qualifiers,
         namespaces=namespaces,
         compartment2id=compartments2id,
@@ -113,7 +110,6 @@ def test_deserialize_full_reaction(
     # Add namespace to database so that it can be used in validation later.
     obj = ReactionModel(**reaction_data)
     reaction = ReactionSerializer(
-        session=session,
         biology_qualifiers=biology_qualifiers,
         namespaces=namespaces,
         id2compartment=id2compartments,

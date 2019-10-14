@@ -30,9 +30,7 @@ def test_serialize_default_compartment(session):
     cmpd = Compartment()
     session.add(cmpd)
     session.commit()
-    obj = CompartmentSerializer(
-        session=session, namespaces={}, biology_qualifiers={}
-    ).serialize(cmpd)
+    obj = CompartmentSerializer(namespaces={}, biology_qualifiers={}).serialize(cmpd)
     assert obj.id == "1"
 
 
@@ -50,9 +48,7 @@ def test_serialize_full_compartment(session, biology_qualifiers):
     session.add(compartment)
     session.commit()
     obj = CompartmentSerializer(
-        session=session,
-        biology_qualifiers=biology_qualifiers,
-        namespaces=Namespace.get_map(session),
+        biology_qualifiers=biology_qualifiers, namespaces=Namespace.get_map(session)
     ).serialize(compartment)
     assert obj.id == "1"
     assert obj.notes == "bla bla bla"
@@ -74,9 +70,7 @@ def test_deserialize_full_compartment(session, biology_qualifiers):
         }
     )
     compartment = CompartmentSerializer(
-        session=session,
-        biology_qualifiers=biology_qualifiers,
-        namespaces=Namespace.get_map(session),
+        biology_qualifiers=biology_qualifiers, namespaces=Namespace.get_map(session)
     ).deserialize(obj)
     session.add(compartment)
     session.commit()

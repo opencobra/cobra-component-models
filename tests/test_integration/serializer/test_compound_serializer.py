@@ -30,9 +30,7 @@ def test_serialize_default_compound(session):
     cmpd = Compound()
     session.add(cmpd)
     session.commit()
-    obj = CompoundSerializer(
-        session=session, namespaces={}, biology_qualifiers={}
-    ).serialize(cmpd)
+    obj = CompoundSerializer(namespaces={}, biology_qualifiers={}).serialize(cmpd)
     assert obj.id == "1"
 
 
@@ -58,9 +56,7 @@ def test_serialize_full_compound(session, biology_qualifiers):
     session.add(cmpd)
     session.commit()
     obj = CompoundSerializer(
-        session=session,
-        biology_qualifiers=biology_qualifiers,
-        namespaces=Namespace.get_map(session),
+        biology_qualifiers=biology_qualifiers, namespaces=Namespace.get_map(session)
     ).serialize(cmpd)
     assert obj.id == "1"
     assert obj.charge == 0
@@ -100,9 +96,7 @@ def test_deserialize_full_compound(session, biology_qualifiers):
         }
     )
     cmpd = CompoundSerializer(
-        session=session,
-        biology_qualifiers=biology_qualifiers,
-        namespaces=Namespace.get_map(session),
+        biology_qualifiers=biology_qualifiers, namespaces=Namespace.get_map(session)
     ).deserialize(obj)
     session.add(cmpd)
     session.commit()

@@ -131,7 +131,7 @@ def id2compartments(
     session, biology_qualifiers, namespaces, compartments_data
 ) -> Dict[str, Compartment]:
     serializer = CompartmentSerializer(
-        session=session, biology_qualifiers=biology_qualifiers, namespaces=namespaces
+        biology_qualifiers=biology_qualifiers, namespaces=namespaces
     )
     result = {}
     for id, data in compartments_data.items():
@@ -153,7 +153,7 @@ def id2compounds(
     session, biology_qualifiers, namespaces, compounds_data
 ) -> Dict[str, Compound]:
     serializer = CompoundSerializer(
-        session=session, biology_qualifiers=biology_qualifiers, namespaces=namespaces
+        biology_qualifiers=biology_qualifiers, namespaces=namespaces
     )
     result = {}
     for id, data in compounds_data.items():
