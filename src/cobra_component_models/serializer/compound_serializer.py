@@ -25,6 +25,7 @@ class CompoundSerializer(AbstractSerializer):
     """Define a compound serializer."""
 
     def __init__(self, **kwargs):
+        """Initialize a compound serializer."""
         super().__init__(**kwargs)
 
     def serialize(self, component: Compound) -> CompoundModel:
@@ -93,9 +94,7 @@ class CompoundSerializer(AbstractSerializer):
                     compound, structure, component_model.annotation.pop(structure)[0][1]
                 )
         if "inchikey" in component_model.annotation:
-            setattr(
-                compound, "inchi_key", component_model.annotation.pop("inchikey")[0][1]
-            )
+            compound.inchi_key = component_model.annotation.pop("inchikey")[0][1]
         compound.names.extend(
             self.deserialize_names(component_model.names, CompoundName)
         )
