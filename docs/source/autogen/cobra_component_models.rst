@@ -9,6 +9,7 @@ Subpackages
    cobra_component_models.data
    cobra_component_models.io
    cobra_component_models.orm
+   cobra_component_models.serializer
 
 Submodules
 ----------

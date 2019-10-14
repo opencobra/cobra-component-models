@@ -11,6 +11,14 @@ Subpackages
 Submodules
 ----------
 
+cobra\_component\_models.orm.abstract\_component module
+-------------------------------------------------------
+
+.. automodule:: cobra_component_models.orm.abstract_component
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 cobra\_component\_models.orm.base module
 ----------------------------------------
 
