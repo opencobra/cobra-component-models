@@ -20,7 +20,6 @@ import pytest
 
 from cobra_component_models.io import ReactionModel
 from cobra_component_models.orm import (
-    Namespace,
     Participant,
     Reaction,
     ReactionAnnotation,
@@ -30,6 +29,7 @@ from cobra_component_models.serializer import ReactionSerializer
 
 
 def test_serialize_default_reaction(session):
+    """Expect that a default reaction can be serialized."""
     reaction = Reaction()
     session.add(reaction)
     session.commit()
@@ -49,6 +49,7 @@ def test_serialize_full_reaction(
     reactions_data,
     reaction_name: str,
 ):
+    """Expect that a fully fleshed out reaction can be serialized."""
     reaction_data = reactions_data[reaction_name]
     reaction = Reaction(notes=reaction_data["notes"])
     rhea = namespaces["rhea"]
@@ -106,8 +107,8 @@ def test_deserialize_full_reaction(
     reactions_data,
     reaction_name: str,
 ):
+    """Expect that a fully fleshed out reaction can be deserialized."""
     reaction_data = reactions_data[reaction_name]
-    # Add namespace to database so that it can be used in validation later.
     obj = ReactionModel(**reaction_data)
     reaction = ReactionSerializer(
         biology_qualifiers=biology_qualifiers,
