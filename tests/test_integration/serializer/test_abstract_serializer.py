@@ -16,23 +16,34 @@
 """Expect that names and annotation can be de-/serialized and selected/inserted."""
 
 
+from typing import Type
+
+import pytest
+
 from cobra_component_models.io import SBaseModel
 from cobra_component_models.orm import (
     AbstractComponent,
+    AbstractComponentAnnotation,
+    AbstractComponentName,
+    CompartmentAnnotation,
+    CompartmentName,
     CompoundAnnotation,
     CompoundName,
-    Namespace,
+    ReactionAnnotation,
+    ReactionName,
 )
 from cobra_component_models.serializer import AbstractSerializer
 
 
 class DummySerializer(AbstractSerializer):
-    pass
+    """Define a barebones concrete serializer."""
 
     def serialize(self, orm_model: AbstractComponent) -> SBaseModel:
+        """Define a concrete method implementation."""
         pass
 
     def deserialize(self, data_model: SBaseModel) -> AbstractComponent:
+        """Define a concrete method implementation."""
         pass
 
 
@@ -41,11 +52,12 @@ def test_init(session):
     DummySerializer(namespaces={}, biology_qualifiers={})
 
 
-def test_serialize_names(session):
-    chebi = Namespace(miriam_id="MIR:00000002", prefix="chebi", pattern=r"^CHEBI:\d+$")
+@pytest.mark.parametrize("name_class", [CompartmentName, CompoundName, ReactionName])
+def test_serialize_names(namespaces, name_class: Type[AbstractComponentName]):
+    """Expect that component names are serialized correctly."""
+    chebi = namespaces["chebi"]
     names = [
-        CompoundName(name=n, namespace=chebi)
-        for n in ["ethanol", "Aethanol", "Alkohol"]
+        name_class(name=n, namespace=chebi) for n in ["ethanol", "Aethanol", "Alkohol"]
     ]
     serialized = DummySerializer(namespaces={}, biology_qualifiers={}).serialize_names(
         names
@@ -53,11 +65,17 @@ def test_serialize_names(session):
     assert serialized == {"chebi": ["ethanol", "Aethanol", "Alkohol"]}
 
 
-def test_serialize_annotation(session, biology_qualifiers):
-    chebi = Namespace(miriam_id="MIR:00000002", prefix="chebi", pattern=r"^CHEBI:\d+$")
+@pytest.mark.parametrize(
+    "annotation_class", [CompartmentAnnotation, CompoundAnnotation, ReactionAnnotation]
+)
+def test_serialize_annotation(
+    biology_qualifiers, namespaces, annotation_class: Type[AbstractComponentAnnotation]
+):
+    """Expect that component annotation is serialized correctly."""
+    chebi = namespaces["chebi"]
     qual = biology_qualifiers["is"]
     annotation = [
-        CompoundAnnotation(identifier=i, namespace=chebi, biology_qualifier=qual)
+        annotation_class(identifier=i, namespace=chebi, biology_qualifier=qual)
         for i in ["CHEBI:16236", "CHEBI:44594", "CHEBI:42377"]
     ]
     serialized = DummySerializer(
@@ -68,31 +86,33 @@ def test_serialize_annotation(session, biology_qualifiers):
     }
 
 
-def test_deserialize_names(session, biology_qualifiers):
-    # Add namespace to database so that it can be used in validation later.
-    chebi = Namespace(miriam_id="MIR:00000002", prefix="chebi", pattern=r"^CHEBI:\d+$")
-    session.add(chebi)
-    session.commit()
+@pytest.mark.parametrize("name_class", [CompartmentName, CompoundName, ReactionName])
+def test_deserialize_names(
+    biology_qualifiers, namespaces, name_class: Type[AbstractComponentName]
+):
+    """Expect that component names are deserialized correctly."""
     obj = {"chebi": ["ethanol", "Aethanol", "Alkohol"]}
     names = DummySerializer(
-        biology_qualifiers=biology_qualifiers, namespaces=Namespace.get_map(session)
-    ).deserialize_names(obj, CompoundName)
+        biology_qualifiers=biology_qualifiers, namespaces=namespaces
+    ).deserialize_names(obj, name_class)
     for name, expected in zip(names, ["ethanol", "Aethanol", "Alkohol"]):
         assert name.namespace.prefix == "chebi"
         assert name.name == expected
 
 
-def test_deserialize_annotation(session, biology_qualifiers):
-    # Add namespace to database so that it can be used in validation later.
-    chebi = Namespace(miriam_id="MIR:00000002", prefix="chebi", pattern=r"^CHEBI:\d+$")
-    session.add(chebi)
-    session.commit()
+@pytest.mark.parametrize(
+    "annotation_class", [CompartmentAnnotation, CompoundAnnotation, ReactionAnnotation]
+)
+def test_deserialize_annotation(
+    biology_qualifiers, namespaces, annotation_class: Type[AbstractComponentAnnotation]
+):
+    """Expect that component annotation is deserialized correctly."""
     obj = {
         "chebi": [["is", "CHEBI:16236"], ["is", "CHEBI:44594"], ["is", "CHEBI:42377"]]
     }
     annotation = DummySerializer(
-        biology_qualifiers=biology_qualifiers, namespaces=Namespace.get_map(session)
-    ).deserialize_annotation(obj, CompoundAnnotation)
+        biology_qualifiers=biology_qualifiers, namespaces=namespaces
+    ).deserialize_annotation(obj, annotation_class)
     for ann, expected in zip(
         annotation,
         [("is", "CHEBI:16236"), ("is", "CHEBI:44594"), ("is", "CHEBI:42377")],
