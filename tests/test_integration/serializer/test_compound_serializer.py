@@ -17,16 +17,12 @@
 
 
 from cobra_component_models.io import CompoundModel
-from cobra_component_models.orm import (
-    Compound,
-    CompoundAnnotation,
-    CompoundName,
-    Namespace,
-)
+from cobra_component_models.orm import Compound, CompoundAnnotation, CompoundName
 from cobra_component_models.serializer import CompoundSerializer
 
 
 def test_serialize_default_compound(session):
+    """Expect that a default compound can be serialized."""
     cmpd = Compound()
     session.add(cmpd)
     session.commit()
@@ -34,7 +30,9 @@ def test_serialize_default_compound(session):
     assert obj.id == "1"
 
 
-def test_serialize_full_compound(session, biology_qualifiers):
+def test_serialize_full_compound(session, biology_qualifiers, namespaces):
+    """Expect that a fully fleshed out compound can be serialized."""
+    chebi = namespaces["chebi"]
     cmpd = Compound(
         inchi="InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3",
         inchi_key="LFQSCWFLJHTTHZ-UHFFFAOYSA-N",
@@ -43,7 +41,6 @@ def test_serialize_full_compound(session, biology_qualifiers):
         chemical_formula="C2H6O",
         notes="bla bla bla",
     )
-    chebi = Namespace(miriam_id="MIR:00000002", prefix="chebi", pattern=r"^CHEBI:\d+$")
     cmpd.names = [
         CompoundName(name=n, namespace=chebi)
         for n in ["ethanol", "Aethanol", "Alkohol"]
@@ -56,7 +53,7 @@ def test_serialize_full_compound(session, biology_qualifiers):
     session.add(cmpd)
     session.commit()
     obj = CompoundSerializer(
-        biology_qualifiers=biology_qualifiers, namespaces=Namespace.get_map(session)
+        biology_qualifiers=biology_qualifiers, namespaces=namespaces
     ).serialize(cmpd)
     assert obj.id == "1"
     assert obj.charge == 0
@@ -71,11 +68,8 @@ def test_serialize_full_compound(session, biology_qualifiers):
     }
 
 
-def test_deserialize_full_compound(session, biology_qualifiers):
-    # Add namespace to database so that it can be used in validation later.
-    chebi = Namespace(miriam_id="MIR:00000002", prefix="chebi", pattern=r"^CHEBI:\d+$")
-    session.add(chebi)
-    session.commit()
+def test_deserialize_full_compound(session, biology_qualifiers, namespaces):
+    """Expect that a fully fleshed out compound can be deserialized."""
     obj = CompoundModel(
         **{
             "id": "1",
@@ -96,7 +90,7 @@ def test_deserialize_full_compound(session, biology_qualifiers):
         }
     )
     cmpd = CompoundSerializer(
-        biology_qualifiers=biology_qualifiers, namespaces=Namespace.get_map(session)
+        biology_qualifiers=biology_qualifiers, namespaces=namespaces
     ).deserialize(obj)
     session.add(cmpd)
     session.commit()
