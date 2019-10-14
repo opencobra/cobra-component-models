@@ -21,12 +21,12 @@ from cobra_component_models.orm import (
     Compartment,
     CompartmentAnnotation,
     CompartmentName,
-    Namespace,
 )
 from cobra_component_models.serializer import CompartmentSerializer
 
 
 def test_serialize_default_compartment(session):
+    """Expect that a default compartment can be serialized."""
     cmpd = Compartment()
     session.add(cmpd)
     session.commit()
@@ -34,9 +34,10 @@ def test_serialize_default_compartment(session):
     assert obj.id == "1"
 
 
-def test_serialize_full_compartment(session, biology_qualifiers):
+def test_serialize_full_compartment(session, biology_qualifiers, namespaces):
+    """Expect that a fully fleshed out compartment can be serialized."""
     compartment = Compartment(notes="bla bla bla")
-    go = Namespace(miriam_id="MIR:00000022", prefix="go", pattern=r"^GO:\d{7}$")
+    go = namespaces["go"]
     compartment.names = [
         CompartmentName(name=n, namespace=go) for n in ["cytosol", "cytoplasm"]
     ]
@@ -48,7 +49,7 @@ def test_serialize_full_compartment(session, biology_qualifiers):
     session.add(compartment)
     session.commit()
     obj = CompartmentSerializer(
-        biology_qualifiers=biology_qualifiers, namespaces=Namespace.get_map(session)
+        biology_qualifiers=biology_qualifiers, namespaces=namespaces
     ).serialize(compartment)
     assert obj.id == "1"
     assert obj.notes == "bla bla bla"
@@ -56,11 +57,8 @@ def test_serialize_full_compartment(session, biology_qualifiers):
     assert obj.annotation == {"go": [("is", "GO:0005737")]}
 
 
-def test_deserialize_full_compartment(session, biology_qualifiers):
-    # Add namespace to database so that it can be used in validation later.
-    go = Namespace(miriam_id="MIR:00000022", prefix="go", pattern=r"^GO:\d{7}$")
-    session.add(go)
-    session.commit()
+def test_deserialize_full_compartment(session, biology_qualifiers, namespaces):
+    """Expect that a fully fleshed out compartment can be deserialized."""
     obj = CompartmentModel(
         **{
             "id": "1",
@@ -70,7 +68,7 @@ def test_deserialize_full_compartment(session, biology_qualifiers):
         }
     )
     compartment = CompartmentSerializer(
-        biology_qualifiers=biology_qualifiers, namespaces=Namespace.get_map(session)
+        biology_qualifiers=biology_qualifiers, namespaces=namespaces
     ).deserialize(obj)
     session.add(compartment)
     session.commit()
