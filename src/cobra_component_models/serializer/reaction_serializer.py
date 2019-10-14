@@ -41,6 +41,30 @@ class ReactionSerializer(AbstractSerializer):
         id2compound: Optional[Dict[str, Compound]] = None,
         **kwargs
     ):
+        """
+        Initialize a reaction serializer.
+
+        Parameters
+        ----------
+        compartment2id : dict
+            A map from compartment database instances to string identifiers for them.
+            Needed for serialization only.
+        compound2id : dict
+            A map from compound database instances to string identifiers for them.
+            Needed for serialization only.
+        id2compartment : dict
+            A map from string identifiers to compartment database instances.
+            Needed for deserialization only.
+        id2compound : dict
+            A map from string identifiers to compound database instances.
+            Needed for deserialization only.
+
+        Other Parameters
+        ----------------
+        kwargs
+            Passed on to super class init method.
+
+        """
         super().__init__(**kwargs)
         self.compartment2id = {} if compartment2id is None else compartment2id
         self.compound2id = {} if compound2id is None else compound2id
@@ -86,6 +110,7 @@ class ReactionSerializer(AbstractSerializer):
     def serialize_participants(
         self, participants: List[Participant]
     ) -> Tuple[Dict[str, ParticipantModel], Dict[str, ParticipantModel]]:
+        """Serialize the reactants and products."""
         reactants = {}
         products = {}
         for part in participants:
@@ -135,6 +160,7 @@ class ReactionSerializer(AbstractSerializer):
         reactants: Dict[str, ParticipantModel],
         products: Dict[str, ParticipantModel],
     ) -> List[Participant]:
+        """Deserialize the reactants and products."""
         participants = []
         for compound_id, part in reactants.items():
             participants.append(
