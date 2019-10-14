@@ -1,0 +1,11 @@
+# Compartment object definitions for testing.
+
+[c]
+id = "c"
+notes = "bla bla bla"
+
+[c.names]
+go = ["cytosol", "cytoplasm"]
+
+[c.annotation]
+go = [["is", "GO:0005737"]]

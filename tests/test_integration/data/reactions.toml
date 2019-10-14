@@ -1,0 +1,32 @@
+# Reaction object definitions for testing.
+
+[dehydrogenase]
+
+id = "1.1.1.1"
+notes = "ethanol + NAD(+) = acetaldehyde + H(+) + NADH"
+
+[dehydrogenase.names]
+rhea = ["ethanol oxidoreductase"]
+
+[dehydrogenase.annotation]
+rhea = [["is", "25290"]]
+
+[dehydrogenase.reactants.ethanol]
+compartment = "c"
+stoichiometry = "1"
+
+[dehydrogenase.reactants.nad]
+compartment = "c"
+stoichiometry = "1"
+
+[dehydrogenase.products.acetaldehyde]
+compartment = "c"
+stoichiometry = "1"
+
+[dehydrogenase.products.h]
+compartment = "c"
+stoichiometry = "1"
+
+[dehydrogenase.products.nadh]
+compartment = "c"
+stoichiometry = "1"

@@ -1,0 +1,54 @@
+# Compound object definitions for testing.
+
+[ethanol]
+id = "ethanol"
+notes = "bla bla bla"
+
+[ethanol.names]
+chebi = ["ethanol", "Aethanol", "Alkohol"]
+
+[ethanol.annotation]
+inchi = [["is", "InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3"]]
+inchikey = [["is", "LFQSCWFLJHTTHZ-UHFFFAOYSA-N"]]
+smiles = [["is", "CCO"]]
+chebi = [["is", "CHEBI:16236"], ["is", "CHEBI:44594"], ["is", "CHEBI:42377"]]
+
+[nad]
+id = "nad"
+notes = "bla bla bla"
+
+[nad.names]
+chebi = ["NAD+"]
+
+[nad.annotation]
+chebi = [["is", "CHEBI:57540"]]
+
+[acetaldehyde]
+id = "acetaldehyde"
+notes = "bla bla bla"
+
+[acetaldehyde.names]
+chebi = ["acetaldehyde"]
+
+[acetaldehyde.annotation]
+chebi = [["is", "CHEBI:15343"]]
+
+[h]
+id = "h"
+notes = "bla bla bla"
+
+[h.names]
+chebi = ["proton"]
+
+[h.annotation]
+chebi = [["is", "CHEBI:15378"]]
+
+[nadh]
+id = "nadh"
+notes = "bla bla bla"
+
+[nadh.names]
+chebi = ["NADH"]
+
+[nadh.annotation]
+chebi = [["is", "CHEBI:57945"]]

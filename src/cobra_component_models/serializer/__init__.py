@@ -19,3 +19,4 @@
 from .abstract_serializer import AbstractSerializer
 from .compartment_serializer import CompartmentSerializer
 from .compound_serializer import CompoundSerializer
+from .reaction_serializer import ReactionSerializer

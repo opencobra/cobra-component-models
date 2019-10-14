@@ -1,0 +1,16 @@
+# Namespaace object definitions for testing.
+
+[go]
+miriam_id = "MIR:00000022"
+prefix = "go"
+pattern = "^GO:\\d{7}$"
+
+[chebi]
+miriam_id = "MIR:00000002"
+prefix = "chebi"
+pattern = "^CHEBI:\\d+$"
+
+[rhea]
+miriam_id = "MIR:00000082"
+prefix = "rhea"
+pattern = "^\\d{5}$"

@@ -16,11 +16,26 @@
 """Provide fixtures for managing a SQLAlchemy session."""
 
 
+from pathlib import Path
+from typing import Dict
+
 import pytest
+import toml
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from cobra_component_models.orm import Base, BiologyQualifier
+from cobra_component_models.io import CompartmentModel, CompoundModel
+from cobra_component_models.orm import (
+    Base,
+    BiologyQualifier,
+    Compartment,
+    Compound,
+    Namespace,
+)
+from cobra_component_models.serializer import CompartmentSerializer, CompoundSerializer
+
+
+data_path = Path(__file__).parent / "data"
 
 
 Session = sessionmaker()
@@ -69,3 +84,87 @@ def biology_qualifiers(session):
     """Return a map from biology qualifiers to model instances."""
     BiologyQualifier.load(session)
     return BiologyQualifier.get_map(session)
+
+
+@pytest.fixture(scope="session")
+def namespaces_data():
+    with (data_path / "namespaces.toml").open() as handle:
+        namespaces = toml.load(handle)
+    return namespaces
+
+
+@pytest.fixture(scope="session")
+def compounds_data():
+    with (data_path / "compounds.toml").open() as handle:
+        compounds = toml.load(handle)
+    return compounds
+
+
+@pytest.fixture(scope="session")
+def compartments_data():
+    with (data_path / "compartments.toml").open() as handle:
+        compartments = toml.load(handle)
+    return compartments
+
+
+@pytest.fixture(scope="session")
+def reactions_data():
+    with (data_path / "reactions.toml").open() as handle:
+        reactions = toml.load(handle)
+    return reactions
+
+
+@pytest.fixture(scope="function")
+def namespaces(session, namespaces_data) -> Dict[str, Namespace]:
+    """Return a map from namespace prefixes to model instances."""
+    result = {}
+    for prefix, data in namespaces_data.items():
+        ns = Namespace(**data)
+        session.add(ns)
+        result[prefix] = ns
+    session.commit()
+    return result
+
+
+@pytest.fixture(scope="function")
+def id2compartments(
+    session, biology_qualifiers, namespaces, compartments_data
+) -> Dict[str, Compartment]:
+    serializer = CompartmentSerializer(
+        session=session, biology_qualifiers=biology_qualifiers, namespaces=namespaces
+    )
+    result = {}
+    for id, data in compartments_data.items():
+        model = CompartmentModel(**data)
+        compartment = serializer.deserialize(model)
+        session.add(compartment)
+        result[id] = compartment
+    session.commit()
+    return result
+
+
+@pytest.fixture(scope="function")
+def compartments2id(id2compartments) -> Dict[Compartment, str]:
+    return {c: i for i, c in id2compartments.items()}
+
+
+@pytest.fixture(scope="function")
+def id2compounds(
+    session, biology_qualifiers, namespaces, compounds_data
+) -> Dict[str, Compound]:
+    serializer = CompoundSerializer(
+        session=session, biology_qualifiers=biology_qualifiers, namespaces=namespaces
+    )
+    result = {}
+    for id, data in compounds_data.items():
+        model = CompoundModel(**data)
+        compound = serializer.deserialize(model)
+        session.add(compound)
+        result[id] = compound
+    session.commit()
+    return result
+
+
+@pytest.fixture(scope="function")
+def compounds2id(id2compounds) -> Dict[Compound, str]:
+    return {c: i for i, c in id2compounds.items()}

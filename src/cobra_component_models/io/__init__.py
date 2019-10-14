@@ -19,5 +19,5 @@
 from .sbase_model import SBaseModel
 from .compartment_model import CompartmentModel
 from .compound_model import CompoundModel
-from .reaction_model import ReactionModel
+from .reaction_model import ParticipantModel, ReactionModel
 from .components_model import ComponentsModel
