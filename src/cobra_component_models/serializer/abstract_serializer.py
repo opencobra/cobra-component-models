@@ -35,13 +35,27 @@ class AbstractSerializer(ABC):
 
     def __init__(
         self,
-        session,
         biology_qualifiers: Dict[str, BiologyQualifier],
         namespaces: Dict[str, Namespace],
         **kwargs
     ):
+        """
+        Initialize the abstract base serializer.
+
+        Parameters
+        ----------
+        biology_qualifiers : dict
+            A mapping from biology qualifiers to their database instances.
+        namespaces : dict
+            A mapping from namespace prefixes to their database instances.
+
+        Other Parameters
+        ----------------
+        kwargs
+            Passed on to super class init method.
+
+        """
         super().__init__(**kwargs)
-        self.session = session
         self.biology_qualifiers = biology_qualifiers
         self.namespaces = namespaces
 
@@ -62,6 +76,7 @@ class AbstractSerializer(ABC):
     def serialize_annotation(
         self, annotation: List[AbstractComponentAnnotation]
     ) -> Dict[str, List[AnnotationType]]:
+        """Serialize the component annotation."""
         obj = {}
         for ann in annotation:
             obj.setdefault(ann.namespace.prefix, []).append(
@@ -77,6 +92,7 @@ class AbstractSerializer(ABC):
     def deserialize_names(
         self, names_data: Dict[str, List[str]], orm_class: Type[AbstractComponentName]
     ) -> List[AbstractComponentName]:
+        """Deserialize the component names."""
         result = []
         for prefix, names in names_data.items():
             namespace = self.namespaces[prefix]
@@ -89,6 +105,7 @@ class AbstractSerializer(ABC):
         annotation_data: Dict[str, List[AnnotationType]],
         orm_class: Type[AbstractComponentAnnotation],
     ) -> List[AbstractComponentAnnotation]:
+        """Deserialize the component annotation."""
         result = []
         for prefix, annotations in annotation_data.items():
             namespace = self.namespaces[prefix]
