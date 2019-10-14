@@ -25,6 +25,7 @@ class CompartmentSerializer(AbstractSerializer):
     """Define a compartment serializer."""
 
     def __init__(self, **kwargs):
+        """Initialize a compartment serializer."""
         super().__init__(**kwargs)
 
     def serialize(self, component: Compartment) -> CompartmentModel:
