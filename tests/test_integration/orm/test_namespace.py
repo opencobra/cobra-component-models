@@ -175,3 +175,18 @@ def test_embedded_prefix_default(session):
     session.add(instance)
     session.commit()
     assert instance.embedded_prefix is False
+
+
+def test_get_map(session, namespaces):
+    """Expect that the namespace map contains all elements."""
+    mapping = Namespace.get_map(session)
+    assert mapping == namespaces
+
+
+def test_get_partial_map(session, namespaces):
+    """Expect that the namespace map contains only specified elements."""
+    prefixes = ["go", "chebi"]
+    mapping = Namespace.get_map(session, prefixes)
+    assert len(mapping) == len(prefixes)
+    for prefix in prefixes:
+        assert mapping[prefix] == namespaces[prefix]

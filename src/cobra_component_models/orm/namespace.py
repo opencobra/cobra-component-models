@@ -30,7 +30,7 @@
 from __future__ import annotations
 
 import re
-from typing import ClassVar, Dict, Optional, Pattern
+from typing import ClassVar, Dict, List, Optional, Pattern
 
 from sqlalchemy import Boolean, Column, String
 from sqlalchemy.orm import reconstructor, validates
@@ -105,6 +105,27 @@ class Namespace(Base):
         return miriam_id
 
     @classmethod
-    def get_map(cls, session) -> Dict[str, Namespace]:
-        """Extract a mapping from namespace prefix to ORM instances."""
-        return {ns.prefix: ns for ns in session.query(cls)}
+    def get_map(
+        cls, session, prefixes: Optional[List[str]] = None
+    ) -> Dict[str, Namespace]:
+        """
+        Extract a mapping from namespace prefix to ORM instances.
+
+        Parameters
+        ----------
+        session : sqlalchemy.Session
+            A SQLAlchemy session giving access to a database.
+        prefixes : list of str, optional
+            The elements in the mapping can be restricted to specific namespaces by
+            their prefix (default return all).
+
+        Returns
+        -------
+        dict
+            A dictionary mapping from namespace prefix to ORM model instance.
+
+        """
+        query = session.query(cls)
+        if prefixes is not None:
+            query = query.filter(cls.prefix.in_(prefixes))
+        return {ns.prefix: ns for ns in query}
