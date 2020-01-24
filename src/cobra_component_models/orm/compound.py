@@ -45,8 +45,9 @@ class Compound(Base):
     inchi : str, optional
     inchi_key : str, optional
     smiles : str, optional
-    charge : float, optional
     chemical_formula : str, optional
+    charge : float, optional
+    mass : float, optional
     notes : str, optional
     names : list of cobra_component_models.orm.CompoundName, optional
     annotation : list of cobra_component_models.orm.CompoundAnnotation, optional
@@ -55,11 +56,12 @@ class Compound(Base):
 
     __tablename__ = "compounds"
 
-    inchi: Optional[str] = Column(String, nullable=True, index=True)
-    inchi_key: Optional[str] = Column(String(27), nullable=True, index=True)
+    inchi: Optional[str] = Column(String, nullable=True, index=True, unique=True)
+    inchi_key: Optional[str] = Column(String(27), nullable=True, index=True, unique=True)
     smiles: Optional[str] = Column(String, nullable=True, index=True)
-    charge: Optional[float] = Column(Float, nullable=True)
     chemical_formula: Optional[str] = Column(String, nullable=True, index=True)
+    charge: Optional[float] = Column(Float, nullable=True)
+    mass: Optional[float] = Column(Float, nullable=True)
     notes: Optional[str] = Column(String, nullable=True)
     names: List[CompoundName] = relationship("CompoundName")
     annotation: List[CompoundAnnotation] = relationship("CompoundAnnotation")
