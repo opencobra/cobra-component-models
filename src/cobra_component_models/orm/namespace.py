@@ -78,6 +78,8 @@ class Namespace(Base):
         """
         Initialize a namespace object.
 
+        Notes
+        -----
         While defining an init method is usually not necessary for SQLAlchemy
         declarative models, we do it here to insert the `compiled_pattern` attribute.
 
