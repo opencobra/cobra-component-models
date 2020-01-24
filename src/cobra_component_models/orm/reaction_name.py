@@ -16,7 +16,7 @@
 """Provide a reaction name ORM model."""
 
 
-from sqlalchemy import Column, ForeignKey, Integer
+from sqlalchemy import Column, ForeignKey, Integer, UniqueConstraint
 
 from .base import Base
 from .mixin import NameMixin
@@ -36,6 +36,10 @@ class ReactionName(NameMixin, Base):
     __tablename__ = "reaction_names"
 
     reaction_id: int = Column(Integer, ForeignKey("reactions.id"), nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint('namespace_id', 'name'),
+    )
 
     def __repr__(self):
         """Return a string representation of the object."""

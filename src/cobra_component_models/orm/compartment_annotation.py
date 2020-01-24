@@ -16,7 +16,7 @@
 """Provide a compartment annotation ORM model."""
 
 
-from sqlalchemy import Column, ForeignKey, Integer
+from sqlalchemy import Column, ForeignKey, Integer, UniqueConstraint
 
 from .base import Base
 from .mixin import AnnotationMixin
@@ -36,6 +36,10 @@ class CompartmentAnnotation(AnnotationMixin, Base):
     __tablename__ = "compartment_annotations"
 
     compartment_id: int = Column(Integer, ForeignKey("compartments.id"), nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint('namespace_id', 'identifier'),
+    )
 
     def __repr__(self):
         """Return a string representation of the object."""

@@ -18,7 +18,7 @@
 """Provide a compound annotation ORM model."""
 
 
-from sqlalchemy import Column, ForeignKey, Integer
+from sqlalchemy import Column, ForeignKey, Integer, UniqueConstraint
 
 from .base import Base
 from .mixin import AnnotationMixin
@@ -38,6 +38,10 @@ class CompoundAnnotation(AnnotationMixin, Base):
     __tablename__ = "compound_annotations"
 
     compound_id: int = Column(Integer, ForeignKey("compounds.id"), nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint('namespace_id', 'identifier'),
+    )
 
     def __repr__(self):
         """Return a string representation of the object."""

@@ -16,7 +16,7 @@
 """Provide a reaction annotation ORM model."""
 
 
-from sqlalchemy import Column, ForeignKey, Integer
+from sqlalchemy import Column, ForeignKey, Integer, UniqueConstraint
 
 from .base import Base
 from .mixin import AnnotationMixin
@@ -36,6 +36,10 @@ class ReactionAnnotation(AnnotationMixin, Base):
     __tablename__ = "reaction_annotations"
 
     reaction_id: int = Column(Integer, ForeignKey("reactions.id"), nullable=False)
+
+    __table_args__ = (
+        UniqueConstraint('namespace_id', 'identifier'),
+    )
 
     def __repr__(self):
         """Return a string representation of the object."""
