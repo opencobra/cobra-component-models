@@ -39,7 +39,9 @@ class NameMixin:
     @declared_attr
     def namespace_id(cls):
         """Defer the namespace id field instantiation."""
-        return Column(Integer, ForeignKey("namespaces.id"), nullable=False)
+        # Some names do not come from a specific namespace, e.g.,
+        # some compartment names are simply invented without source.
+        return Column(Integer, ForeignKey("namespaces.id"), nullable=True)
 
     @declared_attr
     def namespace(cls):
