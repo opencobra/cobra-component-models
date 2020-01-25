@@ -38,7 +38,7 @@ class ReactionName(NameMixin, Base):
     reaction_id: int = Column(Integer, ForeignKey("reactions.id"), nullable=False)
 
     __table_args__ = (
-        UniqueConstraint('namespace_id', 'name'),
+        UniqueConstraint("reaction_id", "namespace_id", "name"),
     )
 
     def __repr__(self):

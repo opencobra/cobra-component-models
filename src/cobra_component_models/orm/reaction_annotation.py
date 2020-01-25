@@ -38,7 +38,7 @@ class ReactionAnnotation(AnnotationMixin, Base):
     reaction_id: int = Column(Integer, ForeignKey("reactions.id"), nullable=False)
 
     __table_args__ = (
-        UniqueConstraint('namespace_id', 'identifier'),
+        UniqueConstraint("reaction_id", "namespace_id", "identifier"),
     )
 
     def __repr__(self):
