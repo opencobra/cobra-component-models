@@ -47,5 +47,5 @@ class CompartmentAnnotation(AnnotationMixin, Base):
             f"{type(self).__name__}(compartment={self.compartment_id}, "
             f"identifier={self.identifier}, "
             f"namespace={self.namespace_id}, "
-            f"qualifier={self.qualifier_id})"
+            f"qualifier={self.biology_qualifier_id})"
         )
