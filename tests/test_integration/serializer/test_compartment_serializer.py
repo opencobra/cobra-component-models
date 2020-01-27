@@ -53,7 +53,8 @@ def test_serialize_full_compartment(session, biology_qualifiers, namespaces):
     ).serialize(compartment)
     assert obj.id == "1"
     assert obj.notes == "bla bla bla"
-    assert obj.names == {"go": ["cytosol", "cytoplasm"]}
+    assert "go" in obj.names
+    assert set(obj.names["go"]) == {"cytosol", "cytoplasm"}
     assert obj.annotation == {"go": [("is", "GO:0005737")]}
 
 
