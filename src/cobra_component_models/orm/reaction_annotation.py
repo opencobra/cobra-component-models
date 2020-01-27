@@ -37,9 +37,7 @@ class ReactionAnnotation(AnnotationMixin, Base):
 
     reaction_id: int = Column(Integer, ForeignKey("reactions.id"), nullable=False)
 
-    __table_args__ = (
-        UniqueConstraint("reaction_id", "namespace_id", "identifier"),
-    )
+    __table_args__ = (UniqueConstraint("reaction_id", "namespace_id", "identifier"),)
 
     def __repr__(self):
         """Return a string representation of the object."""

@@ -37,9 +37,7 @@ class CompoundName(NameMixin, Base):
 
     compound_id: int = Column(Integer, ForeignKey("compounds.id"), nullable=False)
 
-    __table_args__ = (
-        UniqueConstraint("compound_id", "namespace_id", "name"),
-    )
+    __table_args__ = (UniqueConstraint("compound_id", "namespace_id", "name"),)
 
     def __repr__(self):
         """Return a string representation of the object."""

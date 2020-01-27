@@ -37,9 +37,7 @@ class CompartmentAnnotation(AnnotationMixin, Base):
 
     compartment_id: int = Column(Integer, ForeignKey("compartments.id"), nullable=False)
 
-    __table_args__ = (
-        UniqueConstraint("compartment_id", "namespace_id", "identifier"),
-    )
+    __table_args__ = (UniqueConstraint("compartment_id", "namespace_id", "identifier"),)
 
     def __repr__(self):
         """Return a string representation of the object."""

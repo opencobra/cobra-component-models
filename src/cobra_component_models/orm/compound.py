@@ -57,7 +57,9 @@ class Compound(Base):
     __tablename__ = "compounds"
 
     inchi: Optional[str] = Column(String, nullable=True, index=True, unique=True)
-    inchi_key: Optional[str] = Column(String(27), nullable=True, index=True, unique=True)
+    inchi_key: Optional[str] = Column(
+        String(27), nullable=True, index=True, unique=True
+    )
     smiles: Optional[str] = Column(String, nullable=True, index=True)
     chemical_formula: Optional[str] = Column(String, nullable=True, index=True)
     charge: Optional[float] = Column(Float, nullable=True)
