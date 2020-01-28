@@ -41,7 +41,9 @@ def test_empty_init():
 )
 def test_init(attributes):
     """Expect that the object is properly initialized."""
-    old_value = getattr(CompartmentModel.Config, "allow_population_by_field_name", False)
+    old_value = getattr(
+        CompartmentModel.Config, "allow_population_by_field_name", False
+    )
     CompartmentModel.Config.allow_population_by_field_name = True
     obj = CompartmentModel(**attributes)
     CompartmentModel.Config.allow_population_by_field_name = old_value

@@ -59,12 +59,16 @@ def test_serialize_full_compound(session, biology_qualifiers, namespaces):
     assert obj.charge == 0
     assert obj.chemical_formula == "C2H6O"
     assert obj.notes == "bla bla bla"
-    assert obj.names == {"chebi": ["ethanol", "Aethanol", "Alkohol"]}
-    assert obj.annotation == {
-        "inchi": [("is", "InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3")],
-        "inchikey": [("is", "LFQSCWFLJHTTHZ-UHFFFAOYSA-N")],
-        "smiles": [("is", "CCO")],
-        "chebi": [("is", "CHEBI:16236"), ("is", "CHEBI:44594"), ("is", "CHEBI:42377")],
+    assert "chebi" in obj.names
+    assert set(obj.names["chebi"]) == {"ethanol", "Aethanol", "Alkohol"}
+    assert set(obj.annotation) == {"inchi", "inchikey", "smiles", "chebi"}
+    assert set(obj.annotation["inchi"]) == {("is", "InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3")}
+    assert set(obj.annotation["inchikey"]) == {("is", "LFQSCWFLJHTTHZ-UHFFFAOYSA-N")}
+    assert set(obj.annotation["smiles"]) == {("is", "CCO")}
+    assert set(obj.annotation["chebi"]) == {
+        ("is", "CHEBI:16236"),
+        ("is", "CHEBI:44594"),
+        ("is", "CHEBI:42377"),
     }
 
 
@@ -100,12 +104,11 @@ def test_deserialize_full_compound(session, biology_qualifiers, namespaces):
     assert cmpd.charge == 0.0
     assert cmpd.chemical_formula == "C2H6O"
     assert cmpd.notes == "bla bla bla"
-    for name, expected in zip(cmpd.names, ["ethanol", "Aethanol", "Alkohol"]):
-        assert name.namespace.prefix == "chebi"
-        assert name.name == expected
-    for ann, expected in zip(
-        cmpd.annotation,
-        [("is", "CHEBI:16236"), ("is", "CHEBI:44594"), ("is", "CHEBI:42377")],
-    ):
-        assert ann.namespace.prefix == "chebi"
-        assert (ann.biology_qualifier.qualifier, ann.identifier) == expected
+    assert "chebi" in {n.namespace.prefix for n in cmpd.names}
+    assert {n.name for n in cmpd.names} == {"ethanol", "Aethanol", "Alkohol"}
+    assert "chebi" in {a.namespace.prefix for a in cmpd.annotation}
+    assert {(a.biology_qualifier.qualifier, a.identifier) for a in cmpd.annotation} == {
+        ("is", "CHEBI:16236"),
+        ("is", "CHEBI:44594"),
+        ("is", "CHEBI:42377"),
+    }

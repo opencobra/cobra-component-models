@@ -74,9 +74,8 @@ def test_deserialize_full_compartment(session, biology_qualifiers, namespaces):
     session.add(compartment)
     session.commit()
     assert compartment.notes == "bla bla bla"
-    for name, expected in zip(compartment.names, ["cytosol", "cytoplasm"]):
-        assert name.namespace.prefix == "go"
-        assert name.name == expected
+    assert "go" in {n.namespace.prefix for n in compartment.names}
+    assert {n.name for n in compartment.names} == {"cytosol", "cytoplasm"}
     for ann, expected in zip(compartment.annotation, [("is", "GO:0005737")]):
         assert ann.namespace.prefix == "go"
         assert (ann.biology_qualifier.qualifier, ann.identifier) == expected
