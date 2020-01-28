@@ -18,7 +18,7 @@
 
 from typing import Dict, List, Optional
 
-from pydantic import BaseModel, Schema
+from pydantic import BaseModel, Field
 
 from .type import AnnotationType, NotesType
 
@@ -27,7 +27,7 @@ class SBaseModel(BaseModel):
     """Define the SBase data model."""
 
     id: Optional[str] = None
-    sbo_term: Optional[str] = Schema(None, alias="sboTerm")
+    sbo_term: Optional[str] = Field(None, alias="sboTerm")
     notes: Optional[NotesType] = None
     names: Dict[str, List[str]] = {}
     annotation: Dict[str, List[AnnotationType]] = {}

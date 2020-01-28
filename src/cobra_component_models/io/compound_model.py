@@ -18,7 +18,7 @@
 
 from typing import Optional
 
-from pydantic import Schema
+from pydantic import Field
 
 from .sbase_model import SBaseModel
 
@@ -27,5 +27,5 @@ class CompoundModel(SBaseModel):
     """Define a pydantic compound data model."""
 
     id: str
-    charge: Optional[float] = Schema(None)
-    chemical_formula: Optional[str] = Schema(None, alias="chemicalFormula")
+    charge: Optional[float] = Field(None)
+    chemical_formula: Optional[str] = Field(None, alias="chemicalFormula")

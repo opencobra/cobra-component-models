@@ -45,9 +45,9 @@ def test_empty_init():
 )
 def test_init(attributes):
     """Expect that the object is properly initialized."""
-    old_value = getattr(CompoundModel.Config, "allow_population_by_alias", False)
-    CompoundModel.Config.allow_population_by_alias = True
+    old_value = getattr(CompoundModel.Config, "allow_population_by_field_name", False)
+    CompoundModel.Config.allow_population_by_field_name = True
     obj = CompoundModel(**attributes)
-    CompoundModel.Config.allow_population_by_alias = old_value
+    CompoundModel.Config.allow_population_by_field_name = old_value
     for attr, value in attributes.items():
         assert getattr(obj, attr) == value
