@@ -18,7 +18,7 @@
 
 import logging
 
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 
@@ -42,6 +42,7 @@ class AnnotationMixin:
     """
 
     identifier: str = Column(String, nullable=False, index=True)
+    is_deprecated: bool = Column(Boolean, default=False, nullable=False)
 
     @declared_attr
     def namespace_id(cls):
