@@ -29,6 +29,8 @@ class NameMixin:
     ----------
     name : str
         A common name for a component.
+    is_preferred: bool, optional
+        Mark a component's name as being preferred.
     namespace_id : int
         The foreign key of the related Identifiers.org namespace.
 

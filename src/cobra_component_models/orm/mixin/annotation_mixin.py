@@ -16,14 +16,14 @@
 """Provide a component annotation mixin with the corresponding ORM columns."""
 
 
-import logging
+# import logging
 
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 
 
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
 
 
 class AnnotationMixin:
@@ -34,9 +34,12 @@ class AnnotationMixin:
     ----------
     identifier : str
         The annotation identifier.
+    is_deprecated: bool, bool
+        Whether the identifier is a deprecated one. Deprecated identifiers are still
+        useful for identifying components from old data.
     namespace_id : int
         The foreign key of the related Identifiers.org namespace.
-    qualifier_id : int
+    biology_qualifier_id : int
         The foreign key of the related biology qualifier.
 
     """
