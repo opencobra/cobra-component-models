@@ -35,7 +35,7 @@ class NameMixin:
     """
 
     name: str = Column(String, nullable=False, index=True)
-    is_preferred: str = Column(Boolean, default=False, nullable=False, index=True)
+    is_preferred: bool = Column(Boolean, default=False, nullable=False)
 
     @declared_attr
     def namespace_id(cls):
