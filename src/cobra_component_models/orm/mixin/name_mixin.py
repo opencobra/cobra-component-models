@@ -16,7 +16,7 @@
 """Provide a component name mixin with the corresponding ORM columns."""
 
 
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import relationship
 
@@ -35,6 +35,7 @@ class NameMixin:
     """
 
     name: str = Column(String, nullable=False, index=True)
+    is_preferred: str = Column(Boolean, default=False, nullable=False, index=True)
 
     @declared_attr
     def namespace_id(cls):
