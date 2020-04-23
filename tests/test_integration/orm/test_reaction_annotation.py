@@ -21,7 +21,14 @@ import pytest
 from cobra_component_models.orm import Namespace, ReactionAnnotation
 
 
-@pytest.mark.parametrize("attributes", [{"identifier": "25290"}])
+@pytest.mark.parametrize(
+    "attributes",
+    [
+        {"identifier": "25290"},
+        {"identifier": "25290", "is_deprecated": False},
+        {"identifier": "25290", "is_deprecated": True},
+    ],
+)
 def test_init(attributes):
     """Expect that an object can be instantiated with the right attributes."""
     namespace = Namespace(miriam_id="MIR:00000082", prefix="rhea", pattern=r"^\d{5}$")

@@ -21,7 +21,14 @@ import pytest
 from cobra_component_models.orm import CompoundAnnotation, Namespace
 
 
-@pytest.mark.parametrize("attributes", [{"identifier": "CHEBI:12345"}])
+@pytest.mark.parametrize(
+    "attributes",
+    [
+        {"identifier": "CHEBI:12345"},
+        {"identifier": "CHEBI:12345", "is_deprecated": False},
+        {"identifier": "CHEBI:12345", "is_deprecated": True},
+    ],
+)
 def test_init(attributes):
     """Expect that an object can be instantiated with the right attributes."""
     namespace = Namespace(

@@ -21,7 +21,14 @@ import pytest
 from cobra_component_models.orm import CompartmentName
 
 
-@pytest.mark.parametrize("attributes", [{"name": "cytoplasm"}])
+@pytest.mark.parametrize(
+    "attributes",
+    [
+        {"name": "cytoplasm"},
+        {"name": "cytoplasm", "is_preferred": False},
+        {"name": "cytoplasm", "is_preferred": True},
+    ],
+)
 def test_init(attributes):
     """Expect that an object can be instantiated with the right attributes."""
     instance = CompartmentName(**attributes)

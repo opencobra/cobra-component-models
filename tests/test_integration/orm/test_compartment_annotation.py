@@ -21,7 +21,14 @@ import pytest
 from cobra_component_models.orm import CompartmentAnnotation, Namespace
 
 
-@pytest.mark.parametrize("attributes", [{"identifier": "GO:0005737"}])
+@pytest.mark.parametrize(
+    "attributes",
+    [
+        {"identifier": "GO:0005737"},
+        {"identifier": "GO:0005737", "is_deprecated": False},
+        {"identifier": "GO:0005737", "is_deprecated": True},
+    ],
+)
 def test_init(attributes):
     """Expect that an object can be instantiated with the right attributes."""
     namespace = Namespace(miriam_id="MIR:00000022", prefix="go", pattern=r"^GO:\d{7}$")

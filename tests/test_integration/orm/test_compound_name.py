@@ -21,7 +21,14 @@ import pytest
 from cobra_component_models.orm import CompoundName
 
 
-@pytest.mark.parametrize("attributes", [{"name": "water"}])
+@pytest.mark.parametrize(
+    "attributes",
+    [
+        {"name": "water"},
+        {"name": "water", "is_preferred": False},
+        {"name": "water", "is_preferred": True},
+    ],
+)
 def test_init(attributes):
     """Expect that an object can be instantiated with the right attributes."""
     instance = CompoundName(**attributes)
