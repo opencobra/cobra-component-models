@@ -39,6 +39,11 @@ class NameMixin:
     name: str = Column(String, nullable=False, index=True)
     is_preferred: bool = Column(Boolean, default=False, nullable=False)
 
+    def __init__(self, *, is_preferred: bool = False, **kwargs) -> None:
+        """Create an instance with a default value."""
+        super().__init__(**kwargs)
+        self.is_preferred = is_preferred
+
     @declared_attr
     def namespace_id(cls):
         """Defer the namespace id field instantiation."""
