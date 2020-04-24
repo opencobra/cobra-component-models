@@ -35,25 +35,42 @@ from .reaction_name import ReactionName
 class AbstractComponentAnnotation(ABC):
     """Define an abstract base for component annotation."""
 
-    identifier: str
-    biology_qualifier: BiologyQualifier
-    is_deprecated: bool
-    namespace: Namespace
+    def __init__(
+        self,
+        *,
+        identifier: str,
+        biology_qualifier: BiologyQualifier,
+        namespace: Namespace,
+        is_deprecated: bool = False,
+    ) -> None:
+        self.identifier = identifier
+        self.biology_qualifier = biology_qualifier
+        self.namespace = namespace
+        self.is_deprecated = is_deprecated
 
 
 class AbstractComponentName(ABC):
     """Define an abstract base for component names."""
 
-    name: str
-    is_preferred: bool
-    namespace: Namespace
+    def __init__(
+        self, *, name: str, namespace: Namespace, is_preferred: bool = False
+    ) -> None:
+        self.name = name
+        self.namespace = namespace
+        self.is_preferred = is_preferred
 
 
 class AbstractComponent(ABC):
     """Define an abstract base component."""
 
-    names: List[AbstractComponentName]
-    annotation: List[AbstractComponentAnnotation]
+    def __init__(
+        self,
+        *,
+        names: List[AbstractComponentName],
+        annotation: List[AbstractComponentAnnotation],
+    ) -> None:
+        self.names = names
+        self.annotation = annotation
 
 
 AbstractComponent.register(Compartment)
