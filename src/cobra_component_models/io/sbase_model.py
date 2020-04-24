@@ -20,7 +20,8 @@ from typing import Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
-from .type import AnnotationType, NotesType
+from .annotation_model import AnnotationModel
+from .type import NotesType
 
 
 class SBaseModel(BaseModel):
@@ -30,9 +31,10 @@ class SBaseModel(BaseModel):
     sbo_term: Optional[str] = Field(None, alias="sboTerm")
     notes: Optional[NotesType] = None
     names: Dict[str, List[str]] = {}
-    annotation: Dict[str, List[AnnotationType]] = {}
+    annotation: Dict[str, List[AnnotationModel]] = {}
 
     class Config:
         """Configure the SBase data model."""
 
+        allow_population_by_field_name = True
         orm_mode = True

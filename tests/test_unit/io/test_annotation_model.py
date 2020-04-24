@@ -13,48 +13,50 @@
 # limitations under the License.
 
 
-"""Expect that the annotation type functions as designed."""
+"""Expect that the annotation model functions as designed."""
 
 
 from importlib.resources import open_text
 
 import pytest
-from pydantic import BaseModel
 
 from cobra_component_models import data
-from cobra_component_models.io.type import AnnotationType
+from cobra_component_models.io import AnnotationModel
 
 
 with open_text(data, "biology_qualifiers.txt") as handler:
     BIOLOGY_QUALIFIERS = [l.strip() for l in handler.readlines()]
 
 
-class DummyModel(BaseModel):
-    """Define a dummy model for testing the annotation type."""
-
-    annotation: AnnotationType
-
-
 @pytest.mark.parametrize(
     "attributes",
     [
         pytest.param(
-            {"annotation": ["single"]},
-            marks=pytest.mark.raises(exception=ValueError, message="consist"),
+            {},
+            marks=pytest.mark.raises(
+                exception=ValueError, message="identifier\n  field required"
+            ),
         ),
         pytest.param(
-            {"annotation": ["wrong", "single"]},
-            marks=pytest.mark.raises(exception=ValueError, message="valid"),
+            {"identifier": "foo"},
+            marks=pytest.mark.raises(
+                exception=ValueError, message="biologyQualifier\n  field required"
+            ),
         ),
+        {"identifier": "foo", "biology_qualifier": "is"},
+        {"identifier": "foo", "biology_qualifier": "is", "is_deprecated": False},
+        {"identifier": "foo", "biology_qualifier": "is", "is_deprecated": True},
     ],
 )
-def test_bad_init(attributes):
+def test_bad_init(attributes: dict):
     """Expect that appropriate exceptions are raised for wrong arguments."""
-    DummyModel(**attributes)
+    annotation = AnnotationModel(**attributes)
+    for attr, expected in attributes.items():
+        assert getattr(annotation, attr) == expected
 
 
 @pytest.mark.parametrize("qualifier", BIOLOGY_QUALIFIERS)
-def test_all_qualifiers(qualifier):
+def test_all_qualifiers(qualifier: str):
     """Expect that all packaged biology qualifiers are acceptable."""
-    obj = DummyModel(annotation=[qualifier, "foo"])
-    assert obj.annotation[0] == qualifier
+    annotation = AnnotationModel(identifier="foo", biology_qualifier=qualifier)
+    assert annotation.biology_qualifier == qualifier

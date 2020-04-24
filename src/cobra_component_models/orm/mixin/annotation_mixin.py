@@ -34,7 +34,7 @@ class AnnotationMixin:
     ----------
     identifier : str
         The annotation identifier.
-    is_deprecated: bool, bool
+    is_deprecated: bool, optional
         Whether the identifier is a deprecated one. Deprecated identifiers are still
         useful for identifying components from old data.
     namespace_id : int

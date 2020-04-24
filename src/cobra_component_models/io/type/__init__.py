@@ -15,5 +15,4 @@
 
 """Provide custom pydantic types."""
 
-from .annotation_type import AnnotationType
 from .notes_type import NotesType

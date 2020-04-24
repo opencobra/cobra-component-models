@@ -37,6 +37,7 @@ class AbstractComponentAnnotation(ABC):
 
     identifier: str
     biology_qualifier: BiologyQualifier
+    is_deprecated: bool
     namespace: Namespace
 
 
@@ -44,6 +45,7 @@ class AbstractComponentName(ABC):
     """Define an abstract base for component names."""
 
     name: str
+    is_preferred: bool
     namespace: Namespace
 
 

@@ -16,6 +16,7 @@
 """Provide pydantic classes for (de-)serialization of components."""
 
 
+from .annotation_model import AnnotationModel
 from .sbase_model import SBaseModel
 from .compartment_model import CompartmentModel
 from .compound_model import CompoundModel
