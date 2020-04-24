@@ -22,6 +22,7 @@ from pydantic import Field
 
 from .annotation_model import AnnotationModel
 from .io_base import IOBase
+from .name_model import NameModel
 from .type import NotesType
 
 
@@ -31,5 +32,5 @@ class SBaseModel(IOBase):
     id: Optional[str] = None
     sbo_term: Optional[str] = Field(None, alias="sboTerm")
     notes: Optional[NotesType] = None
-    names: Dict[str, List[str]] = {}
+    names: Dict[str, List[NameModel]] = {}
     annotation: Dict[str, List[AnnotationModel]] = {}

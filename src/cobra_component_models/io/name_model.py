@@ -1,10 +1,10 @@
-# Copyright (c) 2019, Moritz E. Beber.
+# Copyright (c) 2019-2020, Moritz E. Beber.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     https://www.apache.org/licenses/LICENSE-2.0
+#    https://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,13 +13,22 @@
 # limitations under the License.
 
 
-"""Provide pydantic classes for (de-)serialization of components."""
+"""Provide a component name model."""
 
 
-from .annotation_model import AnnotationModel
-from .name_model import NameModel
-from .sbase_model import SBaseModel
-from .compartment_model import CompartmentModel
-from .compound_model import CompoundModel
-from .reaction_model import ParticipantModel, ReactionModel
-from .components_model import ComponentsModel
+from pydantic import Field
+
+from .io_base import IOBase
+
+
+class NameModel(IOBase):
+    """
+    Define a component name model.
+
+    Names are simple strings and should be interpretable by human beings. They can also
+    be the preferred name to describe a component.
+
+    """
+
+    name: str
+    is_preferred: bool = Field(False, alias="isPreferred")
