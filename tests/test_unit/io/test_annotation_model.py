@@ -48,7 +48,7 @@ with open_text(data, "biology_qualifiers.txt") as handler:
         {"identifier": "foo", "biology_qualifier": "is", "is_deprecated": True},
     ],
 )
-def test_bad_init(attributes: dict):
+def test_annotation_init(attributes: dict):
     """Expect that appropriate exceptions are raised for wrong arguments."""
     annotation = AnnotationModel(**attributes)
     for attr, expected in attributes.items():
