@@ -17,7 +17,7 @@
 
 
 from pathlib import Path
-from typing import Dict
+from typing import TYPE_CHECKING, Dict
 
 import pytest
 import toml
@@ -35,6 +35,10 @@ from cobra_component_models.orm import (
 from cobra_component_models.serializer import CompartmentSerializer, CompoundSerializer
 
 
+if TYPE_CHECKING:
+    from sqlalchemy.engine.base import Connection
+
+
 data_path = Path(__file__).parent / "data"
 
 
@@ -42,7 +46,7 @@ Session = sessionmaker()
 
 
 @pytest.fixture(scope="session")
-def connection():
+def connection() -> Connection:
     """
     Use a SQLAlchemy connection such that transactions can be used.
 
@@ -62,7 +66,7 @@ def connection():
 
 
 @pytest.fixture(scope="function")
-def session(connection):
+def session(connection: Connection) -> Session:
     """
     Create a transaction and session per test unit.
 
@@ -80,14 +84,14 @@ def session(connection):
 
 
 @pytest.fixture(scope="function")
-def biology_qualifiers(session):
+def biology_qualifiers(session: Session) -> Dict[str, BiologyQualifier]:
     """Return a map from biology qualifiers to database instances."""
     BiologyQualifier.load(session)
     return BiologyQualifier.get_map(session)
 
 
 @pytest.fixture(scope="session")
-def namespaces_data():
+def namespaces_data() -> dict:
     """Return the namespaces data objects."""
     with (data_path / "namespaces.toml").open() as handle:
         namespaces = toml.load(handle)
@@ -95,7 +99,7 @@ def namespaces_data():
 
 
 @pytest.fixture(scope="session")
-def compounds_data():
+def compounds_data() -> dict:
     """Return the compounds data objects."""
     with (data_path / "compounds.toml").open() as handle:
         compounds = toml.load(handle)
@@ -103,7 +107,7 @@ def compounds_data():
 
 
 @pytest.fixture(scope="session")
-def compartments_data():
+def compartments_data() -> dict:
     """Return the compartments data objects."""
     with (data_path / "compartments.toml").open() as handle:
         compartments = toml.load(handle)
@@ -111,7 +115,7 @@ def compartments_data():
 
 
 @pytest.fixture(scope="session")
-def reactions_data():
+def reactions_data() -> dict:
     """Return the reactions data objects."""
     with (data_path / "reactions.toml").open() as handle:
         reactions = toml.load(handle)
@@ -119,7 +123,7 @@ def reactions_data():
 
 
 @pytest.fixture(scope="function")
-def namespaces(session, namespaces_data) -> Dict[str, Namespace]:
+def namespaces(session: Session, namespaces_data: dict) -> Dict[str, Namespace]:
     """Return a map from namespace prefix to database instance."""
     result = {}
     for prefix, data in namespaces_data.items():
@@ -132,7 +136,10 @@ def namespaces(session, namespaces_data) -> Dict[str, Namespace]:
 
 @pytest.fixture(scope="function")
 def id2compartments(
-    session, biology_qualifiers, namespaces, compartments_data
+    session: Session,
+    biology_qualifiers: Dict[str, BiologyQualifier],
+    namespaces: Dict[str, Namespace],
+    compartments_data: dict,
 ) -> Dict[str, Compartment]:
     """Return a map from identifier to compartment database instance."""
     serializer = CompartmentSerializer(
@@ -149,14 +156,17 @@ def id2compartments(
 
 
 @pytest.fixture(scope="function")
-def compartments2id(id2compartments) -> Dict[Compartment, str]:
+def compartments2id(id2compartments: Dict[str, Compartment]) -> Dict[Compartment, str]:
     """Return a map from compartment database instance to identifier ."""
     return {c: i for i, c in id2compartments.items()}
 
 
 @pytest.fixture(scope="function")
 def id2compounds(
-    session, biology_qualifiers, namespaces, compounds_data
+    session: Session,
+    biology_qualifiers: Dict[str, BiologyQualifier],
+    namespaces: Dict[str, Namespace],
+    compounds_data: dict,
 ) -> Dict[str, Compound]:
     """Return a map from identifier to compound database instance."""
     serializer = CompoundSerializer(
@@ -173,6 +183,6 @@ def id2compounds(
 
 
 @pytest.fixture(scope="function")
-def compounds2id(id2compounds) -> Dict[Compound, str]:
+def compounds2id(id2compounds: Dict[str, Compound]) -> Dict[Compound, str]:
     """Return a map from compound database instance to identifier ."""
     return {c: i for i, c in id2compounds.items()}
