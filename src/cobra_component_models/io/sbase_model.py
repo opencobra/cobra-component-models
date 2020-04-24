@@ -18,13 +18,14 @@
 
 from typing import Dict, List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from .annotation_model import AnnotationModel
+from .io_base import IOBase
 from .type import NotesType
 
 
-class SBaseModel(BaseModel):
+class SBaseModel(IOBase):
     """Define the SBase data model."""
 
     id: Optional[str] = None
@@ -32,9 +33,3 @@ class SBaseModel(BaseModel):
     notes: Optional[NotesType] = None
     names: Dict[str, List[str]] = {}
     annotation: Dict[str, List[AnnotationModel]] = {}
-
-    class Config:
-        """Configure the SBase data model."""
-
-        allow_population_by_field_name = True
-        orm_mode = True

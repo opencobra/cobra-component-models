@@ -18,21 +18,15 @@
 
 from typing import Dict, Optional
 
-from pydantic import BaseModel
-
 from .compartment_model import CompartmentModel
 from .compound_model import CompoundModel
+from .io_base import IOBase
 from .reaction_model import ReactionModel
 
 
-class ComponentsModel(BaseModel):
+class ComponentsModel(IOBase):
     """Define the components data model."""
 
     reactions: Optional[Dict[str, ReactionModel]] = {}
     compartments: Optional[Dict[str, CompartmentModel]] = {}
     compounds: Optional[Dict[str, CompoundModel]] = {}
-
-    class Config:
-        """Configure the SBase data model."""
-
-        orm_mode = True

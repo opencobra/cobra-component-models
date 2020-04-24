@@ -18,9 +18,10 @@
 
 from importlib.resources import open_text
 
-from pydantic import BaseModel, Field, validator
+from pydantic import Field, validator
 
 from .. import data
+from .io_base import IOBase
 
 
 # A list of qualifiers taken from https://co.mbine.org/standards/qualifiers.
@@ -28,7 +29,7 @@ with open_text(data, "biology_qualifiers.txt") as handler:
     BIOLOGY_QUALIFIERS = frozenset(l.strip() for l in handler.readlines())
 
 
-class AnnotationModel(BaseModel):
+class AnnotationModel(IOBase):
     """
     Define a component annotation model.
 
@@ -40,12 +41,6 @@ class AnnotationModel(BaseModel):
     biology_qualifier: str = Field(..., alias="biologyQualifier")
     identifier: str
     is_deprecated: bool = Field(False, alias="isDeprecated")
-
-    class Config:
-        """Configure the annotation model."""
-
-        allow_population_by_field_name = True
-        orm_mode = True
 
     @validator("biology_qualifier")
     def biology_qualifier_must_be_known(cls, qualifier: str):

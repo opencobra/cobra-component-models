@@ -1,4 +1,4 @@
-# Copyright (c) 2019, Moritz E. Beber.
+# Copyright (c) 2020, Moritz E. Beber.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,25 +13,18 @@
 # limitations under the License.
 
 
-"""Provide a pydantic reaction data model."""
+"""Provide an abstract superclass to all models for configuration purposes."""
 
 
-from typing import Dict
+from abc import ABC
 
-from .io_base import IOBase
-from .sbase_model import SBaseModel
-
-
-class ParticipantModel(IOBase):
-    """Define a pydantic reactant/product data model."""
-
-    stoichiometry: str
-    compartment: str
+from pydantic import BaseModel
 
 
-class ReactionModel(SBaseModel):
-    """Define a pydantic reaction data model."""
+class IOBase(BaseModel, ABC):
+    """Define an abstract superclass to all models for configuration purposes."""
 
-    id: str
-    reactants: Dict[str, ParticipantModel] = {}
-    products: Dict[str, ParticipantModel] = {}
+    class Config:
+        """Configure the superclass."""
+
+        allow_population_by_field_name = True
