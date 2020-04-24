@@ -18,7 +18,7 @@
 
 from .annotation_model import AnnotationModel
 from .name_model import NameModel
-from .sbase_model import SBaseModel
+from .abstract_base_model import AbstractBaseModel
 from .compartment_model import CompartmentModel
 from .compound_model import CompoundModel
 from .reaction_model import ParticipantModel, ReactionModel

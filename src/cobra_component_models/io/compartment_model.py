@@ -16,10 +16,10 @@
 """Provide a pydantic compartment data model."""
 
 
-from .sbase_model import SBaseModel
+from .abstract_base_model import AbstractBaseModel
 
 
-class CompartmentModel(SBaseModel):
+class CompartmentModel(AbstractBaseModel):
     """Define a pydantic compartment data model."""
 
     id: str

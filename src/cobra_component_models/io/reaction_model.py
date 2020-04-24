@@ -18,8 +18,8 @@
 
 from typing import Dict
 
+from .abstract_base_model import AbstractBaseModel
 from .io_base import IOBase
-from .sbase_model import SBaseModel
 
 
 class ParticipantModel(IOBase):
@@ -29,7 +29,7 @@ class ParticipantModel(IOBase):
     compartment: str
 
 
-class ReactionModel(SBaseModel):
+class ReactionModel(AbstractBaseModel):
     """Define a pydantic reaction data model."""
 
     id: str

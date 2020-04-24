@@ -20,10 +20,10 @@ from typing import Optional
 
 from pydantic import Field
 
-from .sbase_model import SBaseModel
+from .abstract_base_model import AbstractBaseModel
 
 
-class CompoundModel(SBaseModel):
+class CompoundModel(AbstractBaseModel):
     """Define a pydantic compound data model."""
 
     id: str

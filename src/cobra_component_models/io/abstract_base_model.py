@@ -16,6 +16,7 @@
 """Provide the pydantic SBase data model."""
 
 
+from abc import ABC
 from typing import Dict, List, Optional
 
 from pydantic import Field
@@ -26,7 +27,7 @@ from .name_model import NameModel
 from .type import NotesType
 
 
-class SBaseModel(IOBase):
+class AbstractBaseModel(IOBase, ABC):
     """Define the SBase data model."""
 
     id: Optional[str] = None

@@ -18,12 +18,18 @@
 
 import pytest
 
-from cobra_component_models.io import SBaseModel
+from cobra_component_models.io import AbstractBaseModel
+
+
+class MockModel(AbstractBaseModel):
+    """Fake a concrete class implementation."""
+
+    pass
 
 
 def test_empty_init():
-    """Expect that an SBase model can be instantiated without arguments."""
-    obj = SBaseModel()
+    """Expect that a base model can be instantiated without arguments."""
+    obj = MockModel()
     assert obj.id is None
     assert obj.sbo_term is None
     assert obj.notes is None
@@ -32,20 +38,10 @@ def test_empty_init():
 
 
 @pytest.mark.parametrize(
-    "attributes",
-    [
-        {"id": "1"},
-        {"sbo_term": "SBO:007"},
-        {"notes": "bla bla bla"},
-        {"names": {"synonyms": ["one", "two", "three"]}},
-        {"annotation": {"prefix": [("is", "one"), ("is", "two")]}},
-    ],
+    "attributes", [{"id": "1"}, {"sbo_term": "SBO:007"}, {"notes": "bla bla bla"},],
 )
 def test_init(attributes):
     """Expect that the object is properly initialized."""
-    old_value = getattr(SBaseModel.Config, "allow_population_by_field_name", False)
-    SBaseModel.Config.allow_population_by_field_name = True
-    obj = SBaseModel(**attributes)
-    SBaseModel.Config.allow_population_by_field_name = old_value
+    obj = MockModel(**attributes)
     for attr, value in attributes.items():
         assert getattr(obj, attr) == value
