@@ -60,8 +60,8 @@ def test_build_full_io_compartment(session, biology_qualifiers, namespaces):
 
 def test_build_full_orm_compartment(session, biology_qualifiers, namespaces):
     """Expect that a fully fleshed out compartment can be deserialized."""
-    obj = CompartmentModel(
-        **{
+    obj = CompartmentModel.parse_obj(
+        {
             "id": "1",
             "notes": "bla bla bla",
             "names": {"go": [{"name": "cytosol"}, {"name": "cytoplasm"}]},

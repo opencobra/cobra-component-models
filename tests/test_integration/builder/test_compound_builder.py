@@ -74,8 +74,8 @@ def test_build_full_io_compound(session, biology_qualifiers, namespaces):
 
 def test_build_full_orm_compound(session, biology_qualifiers, namespaces):
     """Expect that a fully fleshed out compound can be deserialized."""
-    obj = CompoundModel(
-        **{
+    obj = CompoundModel.parse_obj(
+        {
             "id": "1",
             "notes": "bla bla bla",
             "names": {
