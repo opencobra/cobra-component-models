@@ -5,6 +5,12 @@ History
 Next Release
 ------------
 
+0.5.0 (2020-04-25)
+------------------
+* Create model builders for conversion from IO models to ORM models and vice
+  versa.
+* Many internal changes modifying class hierarchies.
+
 0.4.0 (2020-04-23)
 ------------------
 * Allow setting preferred names in the database.
