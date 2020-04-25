@@ -17,7 +17,9 @@
 
 
 import pytest
+from glom import glom
 
+from cobra_component_models.builder import ReactionBuilder
 from cobra_component_models.io import ReactionModel
 from cobra_component_models.orm import (
     Participant,
@@ -25,20 +27,19 @@ from cobra_component_models.orm import (
     ReactionAnnotation,
     ReactionName,
 )
-from cobra_component_models.serializer import ReactionSerializer
 
 
-def test_serialize_default_reaction(session):
+def test_build_default_io_reaction(session):
     """Expect that a default reaction can be serialized."""
     reaction = Reaction()
     session.add(reaction)
     session.commit()
-    obj = ReactionSerializer(namespaces={}, biology_qualifiers={}).serialize(reaction)
+    obj = ReactionBuilder(namespaces={}, biology_qualifiers={}).build_io(reaction)
     assert obj.id == "1"
 
 
 @pytest.mark.parametrize("reaction_name", ["dehydrogenase"])
-def test_serialize_full_reaction(
+def test_build_full_io_reaction(
     session,
     biology_qualifiers,
     namespaces,
@@ -54,12 +55,13 @@ def test_serialize_full_reaction(
     reaction = Reaction(notes=reaction_data["notes"])
     rhea = namespaces["rhea"]
     reaction.names = [
-        ReactionName(name=n, namespace=rhea) for n in reaction_data["names"]["rhea"]
+        ReactionName(name=n, namespace=rhea)
+        for n in glom(reaction_data, ("names.rhea", ["name"]))
     ]
     qual = biology_qualifiers["is"]
     reaction.annotation = [
-        ReactionAnnotation(identifier=i[1], namespace=rhea, biology_qualifier=qual)
-        for i in reaction_data["annotation"]["rhea"]
+        ReactionAnnotation(identifier=i, namespace=rhea, biology_qualifier=qual)
+        for i in glom(reaction_data, ("annotation.rhea", ["identifier"]))
     ]
     for compound_id, part in reaction_data["reactants"].items():
         reaction.participants.append(
@@ -81,22 +83,26 @@ def test_serialize_full_reaction(
         )
     session.add(reaction)
     session.commit()
-    obj = ReactionSerializer(
+    obj = ReactionBuilder(
         biology_qualifiers=biology_qualifiers,
         namespaces=namespaces,
         compartment2id=compartments2id,
         compound2id=compounds2id,
-    ).serialize(reaction)
+    ).build_io(reaction)
     assert obj.notes == reaction_data["notes"]
-    assert obj.names == reaction_data["names"]
+    assert {n.name for n in obj.names["rhea"]} == set(
+        glom(reaction_data, ("names.rhea", ["name"]))
+    )
     for prefix, annotation in reaction_data["annotation"].items():
-        assert obj.annotation[prefix] == [tuple(a) for a in annotation]
+        assert {a.identifier for a in obj.annotation[prefix]} == set(
+            glom(annotation, ["identifier"])
+        )
     assert obj.reactants == reaction_data["reactants"]
     assert obj.products == reaction_data["products"]
 
 
 @pytest.mark.parametrize("reaction_name", ["dehydrogenase"])
-def test_deserialize_full_reaction(
+def test_build_full_orm_reaction(
     session,
     biology_qualifiers,
     namespaces,
@@ -109,22 +115,22 @@ def test_deserialize_full_reaction(
 ):
     """Expect that a fully fleshed out reaction can be deserialized."""
     reaction_data = reactions_data[reaction_name]
-    obj = ReactionModel(**reaction_data)
-    reaction = ReactionSerializer(
+    obj = ReactionModel.parse_obj(reaction_data)
+    reaction = ReactionBuilder(
         biology_qualifiers=biology_qualifiers,
         namespaces=namespaces,
         id2compartment=id2compartments,
         id2compound=id2compounds,
-    ).deserialize(obj)
+    ).build_orm(obj)
     session.add(reaction)
     session.commit()
     assert reaction.notes == reaction_data["notes"]
-    for name, expected in zip(reaction.names, reaction_data["names"]["rhea"]):
-        assert name.namespace.prefix == "rhea"
-        assert name.name == expected
-    for ann, expected in zip(reaction.annotation, reaction_data["annotation"]["rhea"]):
-        assert ann.namespace.prefix == "rhea"
-        assert (ann.biology_qualifier.qualifier, ann.identifier) == tuple(expected)
+    assert {n.name for n in reaction.names if n.namespace.prefix == "rhea"} == set(
+        glom(reaction_data, ("names.rhea", ["name"]))
+    )
+    assert {
+        a.identifier for a in reaction.annotation if a.namespace.prefix == "rhea"
+    } == set(glom(reaction_data, ("annotation.rhea", ["identifier"])))
     for part in reaction.participants:
         compound_id = compounds2id[part.compound]
         if part.is_product:

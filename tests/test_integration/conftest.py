@@ -17,13 +17,15 @@
 
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Dict
+from typing import Dict
 
 import pytest
 import toml
 from sqlalchemy import create_engine
+from sqlalchemy.engine.base import Connection
 from sqlalchemy.orm import sessionmaker
 
+from cobra_component_models.builder import CompartmentBuilder, CompoundBuilder
 from cobra_component_models.io import CompartmentModel, CompoundModel
 from cobra_component_models.orm import (
     Base,
@@ -32,11 +34,6 @@ from cobra_component_models.orm import (
     Compound,
     Namespace,
 )
-from cobra_component_models.serializer import CompartmentSerializer, CompoundSerializer
-
-
-if TYPE_CHECKING:
-    from sqlalchemy.engine.base import Connection
 
 
 data_path = Path(__file__).parent / "data"
@@ -142,13 +139,13 @@ def id2compartments(
     compartments_data: dict,
 ) -> Dict[str, Compartment]:
     """Return a map from identifier to compartment database instance."""
-    serializer = CompartmentSerializer(
+    builder = CompartmentBuilder(
         biology_qualifiers=biology_qualifiers, namespaces=namespaces
     )
     result = {}
     for id, data in compartments_data.items():
-        model = CompartmentModel(**data)
-        compartment = serializer.deserialize(model)
+        model = CompartmentModel.parse_obj(data)
+        compartment = builder.build_orm(model)
         session.add(compartment)
         result[id] = compartment
     session.commit()
@@ -169,13 +166,13 @@ def id2compounds(
     compounds_data: dict,
 ) -> Dict[str, Compound]:
     """Return a map from identifier to compound database instance."""
-    serializer = CompoundSerializer(
+    builder = CompoundBuilder(
         biology_qualifiers=biology_qualifiers, namespaces=namespaces
     )
     result = {}
     for id, data in compounds_data.items():
-        model = CompoundModel(**data)
-        compound = serializer.deserialize(model)
+        model = CompoundModel.parse_obj(data)
+        compound = builder.build_orm(model)
         session.add(compound)
         result[id] = compound
     session.commit()

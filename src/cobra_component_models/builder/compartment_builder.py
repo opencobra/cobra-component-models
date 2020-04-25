@@ -13,28 +13,28 @@
 # limitations under the License.
 
 
-"""Provide a compartment serializer."""
+"""Provide a compartment builder."""
 
 
 from ..io import CompartmentModel
 from ..orm import Compartment, CompartmentAnnotation, CompartmentName
-from .abstract_serializer import AbstractSerializer
+from .abstract_builder import AbstractBuilder
 
 
-class CompartmentSerializer(AbstractSerializer):
-    """Define a compartment serializer."""
+class CompartmentBuilder(AbstractBuilder):
+    """Define a compartment builder."""
 
     def __init__(self, **kwargs):
-        """Initialize a compartment serializer."""
+        """Initialize a compartment builder."""
         super().__init__(**kwargs)
 
-    def serialize(self, component: Compartment) -> CompartmentModel:
+    def build_io(self, orm_model: Compartment) -> CompartmentModel:
         """
-        Serialize a compartment ORM model to a pydantic data model.
+        Build an IO compartment model from an ORM compartment model.
 
         Parameters
         ----------
-        component : cobra_component_models.orm.Compartment
+        orm_model : cobra_component_models.orm.Compartment
             The compartment ORM model instance to be serialized.
 
         Returns
@@ -52,22 +52,22 @@ class CompartmentSerializer(AbstractSerializer):
         .. [CC1] https://docs.sqlalchemy.org/en/13/glossary.html#term-n-plus-one-problem
 
         """
-        names = self.serialize_names(component.names)
-        annotation = self.serialize_annotation(component.annotation)
+        names = self.build_io_names(orm_model.names)
+        annotation = self.build_io_annotation(orm_model.annotation)
         return CompartmentModel(
-            id=str(component.id),
-            notes=component.notes,
+            id=str(orm_model.id),
+            notes=orm_model.notes,
             names=names,
             annotation=annotation,
         )
 
-    def deserialize(self, component_model: CompartmentModel) -> Compartment:
+    def build_orm(self, data_model: CompartmentModel) -> Compartment:
         """
-        Deserialize a pydantic compartment data model to an ORM model.
+        Build an ORM compartment model from an IO compartment model.
 
         Parameters
         ----------
-        component_model : cobra_component_models.io.CompartmentModel
+        data_model : cobra_component_models.io.CompartmentModel
             The pydantic compartment data model instance to be deserialized.
 
         Returns
@@ -76,13 +76,11 @@ class CompartmentSerializer(AbstractSerializer):
             A corresponding compartment ORM model.
 
         """
-        compartment = Compartment(notes=component_model.notes)
+        compartment = Compartment(notes=data_model.notes)
         compartment.names.extend(
-            self.deserialize_names(component_model.names, CompartmentName)
+            self.build_orm_names(data_model.names, CompartmentName)
         )
         compartment.annotation.extend(
-            self.deserialize_annotation(
-                component_model.annotation, CompartmentAnnotation
-            )
+            self.build_orm_annotation(data_model.annotation, CompartmentAnnotation)
         )
         return compartment

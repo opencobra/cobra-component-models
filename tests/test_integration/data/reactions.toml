@@ -1,15 +1,15 @@
 # Reaction object definitions for testing.
 
 [dehydrogenase]
-
 id = "1.1.1.1"
 notes = "ethanol + NAD(+) = acetaldehyde + H(+) + NADH"
 
-[dehydrogenase.names]
-rhea = ["ethanol oxidoreductase"]
+[[dehydrogenase.names.rhea]]
+name = "ethanol oxidoreductase"
 
-[dehydrogenase.annotation]
-rhea = [["is", "25290"]]
+[[dehydrogenase.annotation.rhea]]
+biology_qualifier = "is"
+identifier = "25290"
 
 [dehydrogenase.reactants.ethanol]
 compartment = "c"

@@ -16,7 +16,7 @@
 """Provide serialization classes for components."""
 
 
-from .abstract_serializer import AbstractSerializer
-from .compartment_serializer import CompartmentSerializer
-from .compound_serializer import CompoundSerializer
-from .reaction_serializer import ReactionSerializer
+from .abstract_builder import AbstractBuilder
+from .compartment_builder import CompartmentBuilder
+from .compound_builder import CompoundBuilder
+from .reaction_builder import ReactionBuilder

@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-"""Provide a reaction serializer."""
+"""Provide a reaction builder."""
 
 
 from typing import Dict, List, Optional, Tuple
@@ -27,11 +27,11 @@ from ..orm import (
     ReactionAnnotation,
     ReactionName,
 )
-from .abstract_serializer import AbstractSerializer
+from .abstract_builder import AbstractBuilder
 
 
-class ReactionSerializer(AbstractSerializer):
-    """Define a reaction serializer."""
+class ReactionBuilder(AbstractBuilder):
+    """Define a reaction builder."""
 
     def __init__(
         self,
@@ -42,7 +42,7 @@ class ReactionSerializer(AbstractSerializer):
         **kwargs
     ):
         """
-        Initialize a reaction serializer.
+        Initialize a reaction builder.
 
         Parameters
         ----------
@@ -71,13 +71,13 @@ class ReactionSerializer(AbstractSerializer):
         self.id2compartment = {} if id2compartment is None else id2compartment
         self.id2compound = {} if id2compound is None else id2compound
 
-    def serialize(self, component: Reaction) -> ReactionModel:
+    def build_io(self, orm_model: Reaction) -> ReactionModel:
         """
-        Serialize a reaction ORM model to a pydantic data model.
+        Build an IO reaction model from an ORM reaction model.
 
         Parameters
         ----------
-        component : cobra_component_models.orm.Reaction
+        orm_model : cobra_component_models.orm.Reaction
             The reaction ORM model instance to be serialized.
 
         Returns
@@ -95,22 +95,22 @@ class ReactionSerializer(AbstractSerializer):
         .. [R1] https://docs.sqlalchemy.org/en/13/glossary.html#term-n-plus-one-problem
 
         """
-        names = self.serialize_names(component.names)
-        annotation = self.serialize_annotation(component.annotation)
-        reactants, products = self.serialize_participants(component.participants)
+        names = self.build_io_names(orm_model.names)
+        annotation = self.build_io_annotation(orm_model.annotation)
+        reactants, products = self.build_io_participants(orm_model.participants)
         return ReactionModel(
-            id=str(component.id),
-            notes=component.notes,
+            id=str(orm_model.id),
+            notes=orm_model.notes,
             names=names,
             annotation=annotation,
             reactants=reactants,
             products=products,
         )
 
-    def serialize_participants(
+    def build_io_participants(
         self, participants: List[Participant]
     ) -> Tuple[Dict[str, ParticipantModel], Dict[str, ParticipantModel]]:
-        """Serialize the reactants and products."""
+        """Build the IO model reactants and products."""
         reactants = {}
         products = {}
         for part in participants:
@@ -126,13 +126,13 @@ class ReactionSerializer(AbstractSerializer):
                 )
         return reactants, products
 
-    def deserialize(self, component_model: ReactionModel) -> Reaction:
+    def build_orm(self, data_model: ReactionModel) -> Reaction:
         """
-        Deserialize a pydantic reaction data model to an ORM model.
+        Build an ORM reaction model from an IO reaction model.
 
         Parameters
         ----------
-        component_model : cobra_component_models.io.ReactionModel
+        data_model : cobra_component_models.io.ReactionModel
             The pydantic reaction data model instance to be deserialized.
 
         Returns
@@ -141,26 +141,24 @@ class ReactionSerializer(AbstractSerializer):
             A corresponding reaction ORM model.
 
         """
-        reaction = Reaction(notes=component_model.notes)
-        reaction.names.extend(
-            self.deserialize_names(component_model.names, ReactionName)
-        )
+        reaction = Reaction(notes=data_model.notes)
+        reaction.names.extend(self.build_orm_names(data_model.names, ReactionName))
         reaction.annotation.extend(
-            self.deserialize_annotation(component_model.annotation, ReactionAnnotation)
+            self.build_orm_annotation(data_model.annotation, ReactionAnnotation)
         )
         reaction.participants.extend(
-            self.deserialize_participants(
-                reactants=component_model.reactants, products=component_model.products
+            self.build_orm_participants(
+                reactants=data_model.reactants, products=data_model.products
             )
         )
         return reaction
 
-    def deserialize_participants(
+    def build_orm_participants(
         self,
         reactants: Dict[str, ParticipantModel],
         products: Dict[str, ParticipantModel],
     ) -> List[Participant]:
-        """Deserialize the reactants and products."""
+        """Build the ORM model reactants and products."""
         participants = []
         for compound_id, part in reactants.items():
             participants.append(

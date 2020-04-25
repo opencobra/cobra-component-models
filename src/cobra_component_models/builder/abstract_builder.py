@@ -13,14 +13,13 @@
 # limitations under the License.
 
 
-"""Provide an abstract serializer."""
+"""Provide an abstract builder."""
 
 
 from abc import ABC, abstractmethod
 from typing import Dict, List, Type
 
-from ..io import SBaseModel
-from ..io.type import AnnotationType
+from ..io import AbstractBaseModel, AnnotationModel, NameModel
 from ..orm import (
     AbstractComponent,
     AbstractComponentAnnotation,
@@ -30,17 +29,18 @@ from ..orm import (
 )
 
 
-class AbstractSerializer(ABC):
-    """Define an abstract serializer."""
+class AbstractBuilder(ABC):
+    """Define an abstract builder."""
 
     def __init__(
         self,
+        *,
         biology_qualifiers: Dict[str, BiologyQualifier],
         namespaces: Dict[str, Namespace],
         **kwargs
     ):
         """
-        Initialize the abstract base serializer.
+        Initialize the abstract base builder.
 
         Parameters
         ----------
@@ -60,61 +60,74 @@ class AbstractSerializer(ABC):
         self.namespaces = namespaces
 
     @abstractmethod
-    def serialize(self, component: AbstractComponent) -> SBaseModel:
-        """Serialize an ORM model to a pydantic data model."""
+    def build_io(self, orm_model: AbstractComponent) -> AbstractBaseModel:
+        """Build an IO model from an ORM model."""
         pass
 
-    def serialize_names(
+    def build_io_names(
         self, names: List[AbstractComponentName]
-    ) -> Dict[str, List[str]]:
-        """Serialize the component names."""
+    ) -> Dict[str, List[NameModel]]:
+        """Build IO model names from ORM names."""
         obj = {}
-        for name_model in names:
-            obj.setdefault(name_model.namespace.prefix, []).append(name_model.name)
+        for name in names:
+            obj.setdefault(name.namespace.prefix, []).append(
+                NameModel(name=name.name, is_preferred=name.is_preferred)
+            )
         return obj
 
-    def serialize_annotation(
-        self, annotation: List[AbstractComponentAnnotation]
-    ) -> Dict[str, List[AnnotationType]]:
-        """Serialize the component annotation."""
+    def build_io_annotation(
+        self, annotation: List[AbstractComponentAnnotation],
+    ) -> Dict[str, List[AnnotationModel]]:
+        """Build IO model annotation from ORM annotation."""
         obj = {}
         for ann in annotation:
             obj.setdefault(ann.namespace.prefix, []).append(
-                (ann.biology_qualifier.qualifier, ann.identifier)
+                AnnotationModel(
+                    identifier=ann.identifier,
+                    biology_qualifier=ann.biology_qualifier.qualifier,
+                    is_deprecated=ann.is_deprecated,
+                )
             )
         return obj
 
     @abstractmethod
-    def deserialize(self, component_model: SBaseModel) -> AbstractComponent:
-        """Deserialize a pydantic data model to an ORM model."""
+    def build_orm(self, data_model: AbstractBaseModel) -> AbstractComponent:
+        """Build an ORM model from an IO model."""
         pass
 
-    def deserialize_names(
-        self, names_data: Dict[str, List[str]], orm_class: Type[AbstractComponentName]
+    def build_orm_names(
+        self, names_data: Dict[str, List[NameModel]], cls: Type[AbstractComponentName]
     ) -> List[AbstractComponentName]:
-        """Deserialize the component names."""
+        """Build ORM model names from IO names."""
         result = []
         for prefix, names in names_data.items():
             namespace = self.namespaces[prefix]
             for name in names:
-                result.append(orm_class(name=name, namespace=namespace))
+                result.append(
+                    cls(
+                        name=name.name,
+                        namespace=namespace,
+                        is_preferred=name.is_preferred,
+                    )
+                )
         return result
 
-    def deserialize_annotation(
+    def build_orm_annotation(
         self,
-        annotation_data: Dict[str, List[AnnotationType]],
-        orm_class: Type[AbstractComponentAnnotation],
+        annotation_data: Dict[str, List[AnnotationModel]],
+        cls: Type[AbstractComponentAnnotation],
     ) -> List[AbstractComponentAnnotation]:
-        """Deserialize the component annotation."""
+        """Build ORM annotation names from IO annotation."""
         result = []
         for prefix, annotations in annotation_data.items():
             namespace = self.namespaces[prefix]
             for ann in annotations:
-                qualifier = self.biology_qualifiers[ann[0]]
+                qualifier = self.biology_qualifiers[ann.biology_qualifier]
                 result.append(
-                    orm_class(
-                        identifier=ann[1],
+                    cls(
+                        identifier=ann.identifier,
                         biology_qualifier=qualifier,
+                        is_deprecated=ann.is_deprecated,
                         namespace=namespace,
                     )
                 )

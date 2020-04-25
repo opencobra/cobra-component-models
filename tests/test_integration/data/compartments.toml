@@ -4,8 +4,12 @@
 id = "c"
 notes = "bla bla bla"
 
-[c.names]
-go = ["cytosol", "cytoplasm"]
+[[c.names.go]]
+name = "cytosol"
 
-[c.annotation]
-go = [["is", "GO:0005737"]]
+[[c.names.go]]
+name = "cytoplasm"
+
+[[c.annotation.go]]
+biology_qualifier = "is"
+identifier = "GO:0005737"

@@ -39,15 +39,23 @@ def test_empty_init():
         {"id": "1", "chemical_formula": "C2H6O"},
         {"id": "1", "sbo_term": "SBO:007"},
         {"id": "1", "notes": "bla bla bla"},
-        {"id": "1", "names": {"synonyms": ["one", "two", "three"]}},
-        {"id": "1", "annotation": {"prefix": [("is", "one"), ("is", "two")]}},
+        {
+            "id": "1",
+            "names": {
+                "synonyms": [{"name": "one"}, {"name": "two"}, {"name": "three"}]
+            },
+        },
+        {
+            "id": "1",
+            "annotation": {
+                "prefix": [
+                    {"biology_qualifier": "is", "identifier": "one"},
+                    {"biology_qualifier": "is", "identifier": "two"},
+                ]
+            },
+        },
     ],
 )
 def test_init(attributes):
     """Expect that the object is properly initialized."""
-    old_value = getattr(CompoundModel.Config, "allow_population_by_field_name", False)
-    CompoundModel.Config.allow_population_by_field_name = True
-    obj = CompoundModel(**attributes)
-    CompoundModel.Config.allow_population_by_field_name = old_value
-    for attr, value in attributes.items():
-        assert getattr(obj, attr) == value
+    CompoundModel.parse_obj(attributes)

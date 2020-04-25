@@ -16,21 +16,21 @@
 """Expect that compounds can be de-/serialized and selected/inserted."""
 
 
+from cobra_component_models.builder import CompoundBuilder
 from cobra_component_models.io import CompoundModel
 from cobra_component_models.orm import Compound, CompoundAnnotation, CompoundName
-from cobra_component_models.serializer import CompoundSerializer
 
 
-def test_serialize_default_compound(session):
+def test_build_default_io_compound(session):
     """Expect that a default compound can be serialized."""
     cmpd = Compound()
     session.add(cmpd)
     session.commit()
-    obj = CompoundSerializer(namespaces={}, biology_qualifiers={}).serialize(cmpd)
+    obj = CompoundBuilder(namespaces={}, biology_qualifiers={}).build_io(cmpd)
     assert obj.id == "1"
 
 
-def test_serialize_full_compound(session, biology_qualifiers, namespaces):
+def test_build_full_io_compound(session, biology_qualifiers, namespaces):
     """Expect that a fully fleshed out compound can be serialized."""
     chebi = namespaces["chebi"]
     cmpd = Compound(
@@ -43,59 +43,75 @@ def test_serialize_full_compound(session, biology_qualifiers, namespaces):
     )
     cmpd.names = [
         CompoundName(name=n, namespace=chebi)
-        for n in ["ethanol", "Aethanol", "Alkohol"]
+        for n in ("ethanol", "Aethanol", "Alkohol")
     ]
     qual = biology_qualifiers["is"]
     cmpd.annotation = [
         CompoundAnnotation(identifier=i, namespace=chebi, biology_qualifier=qual)
-        for i in ["CHEBI:16236", "CHEBI:44594", "CHEBI:42377"]
+        for i in ("CHEBI:16236", "CHEBI:44594", "CHEBI:42377")
     ]
     session.add(cmpd)
     session.commit()
-    obj = CompoundSerializer(
+    obj = CompoundBuilder(
         biology_qualifiers=biology_qualifiers, namespaces=namespaces
-    ).serialize(cmpd)
+    ).build_io(cmpd)
     assert obj.id == "1"
     assert obj.charge == 0
     assert obj.chemical_formula == "C2H6O"
     assert obj.notes == "bla bla bla"
     assert "chebi" in obj.names
-    assert set(obj.names["chebi"]) == {"ethanol", "Aethanol", "Alkohol"}
+    assert {n.name for n in obj.names["chebi"]} == {"ethanol", "Aethanol", "Alkohol"}
     assert set(obj.annotation) == {"inchi", "inchikey", "smiles", "chebi"}
-    assert set(obj.annotation["inchi"]) == {("is", "InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3")}
-    assert set(obj.annotation["inchikey"]) == {("is", "LFQSCWFLJHTTHZ-UHFFFAOYSA-N")}
-    assert set(obj.annotation["smiles"]) == {("is", "CCO")}
-    assert set(obj.annotation["chebi"]) == {
-        ("is", "CHEBI:16236"),
-        ("is", "CHEBI:44594"),
-        ("is", "CHEBI:42377"),
+    assert obj.annotation["inchi"][0].identifier == "InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3"
+    assert obj.annotation["inchikey"][0].identifier == "LFQSCWFLJHTTHZ-UHFFFAOYSA-N"
+    assert obj.annotation["smiles"][0].identifier == "CCO"
+    assert {a.identifier for a in obj.annotation["chebi"]} == {
+        "CHEBI:16236",
+        "CHEBI:44594",
+        "CHEBI:42377",
     }
 
 
-def test_deserialize_full_compound(session, biology_qualifiers, namespaces):
+def test_build_full_orm_compound(session, biology_qualifiers, namespaces):
     """Expect that a fully fleshed out compound can be deserialized."""
     obj = CompoundModel(
         **{
             "id": "1",
             "notes": "bla bla bla",
-            "names": {"chebi": ["ethanol", "Aethanol", "Alkohol"]},
+            "names": {
+                "chebi": [
+                    {"name": "ethanol"},
+                    {"name": "Aethanol"},
+                    {"name": "Alkohol"},
+                ]
+            },
             "annotation": {
                 "chebi": [
-                    ["is", "CHEBI:16236"],
-                    ["is", "CHEBI:44594"],
-                    ["is", "CHEBI:42377"],
+                    {"biology_qualifier": "is", "identifier": "CHEBI:16236"},
+                    {"biology_qualifier": "is", "identifier": "CHEBI:44594"},
+                    {"biology_qualifier": "is", "identifier": "CHEBI:42377"},
                 ],
-                "inchi": [["is", "InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3"]],
-                "inchikey": [["is", "LFQSCWFLJHTTHZ-UHFFFAOYSA-N"]],
-                "smiles": [["is", "CCO"]],
+                "inchi": [
+                    {
+                        "biology_qualifier": "is",
+                        "identifier": "InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3",
+                    }
+                ],
+                "inchikey": [
+                    {
+                        "biology_qualifier": "is",
+                        "identifier": "LFQSCWFLJHTTHZ-UHFFFAOYSA-N",
+                    }
+                ],
+                "smiles": [{"biology_qualifier": "is", "identifier": "CCO"}],
             },
             "charge": 0.0,
             "chemicalFormula": "C2H6O",
         }
     )
-    cmpd = CompoundSerializer(
+    cmpd = CompoundBuilder(
         biology_qualifiers=biology_qualifiers, namespaces=namespaces
-    ).deserialize(obj)
+    ).build_orm(obj)
     session.add(cmpd)
     session.commit()
     assert cmpd.inchi == "InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3"
@@ -107,8 +123,8 @@ def test_deserialize_full_compound(session, biology_qualifiers, namespaces):
     assert "chebi" in {n.namespace.prefix for n in cmpd.names}
     assert {n.name for n in cmpd.names} == {"ethanol", "Aethanol", "Alkohol"}
     assert "chebi" in {a.namespace.prefix for a in cmpd.annotation}
-    assert {(a.biology_qualifier.qualifier, a.identifier) for a in cmpd.annotation} == {
-        ("is", "CHEBI:16236"),
-        ("is", "CHEBI:44594"),
-        ("is", "CHEBI:42377"),
+    assert {a.identifier for a in cmpd.annotation} == {
+        "CHEBI:16236",
+        "CHEBI:44594",
+        "CHEBI:42377",
     }

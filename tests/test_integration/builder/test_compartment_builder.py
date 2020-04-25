@@ -16,25 +16,25 @@
 """Expect that compartments can be de-/serialized and selected/inserted."""
 
 
+from cobra_component_models.builder import CompartmentBuilder
 from cobra_component_models.io import CompartmentModel
 from cobra_component_models.orm import (
     Compartment,
     CompartmentAnnotation,
     CompartmentName,
 )
-from cobra_component_models.serializer import CompartmentSerializer
 
 
-def test_serialize_default_compartment(session):
+def test_build_io_default_compartment(session):
     """Expect that a default compartment can be serialized."""
     cmpd = Compartment()
     session.add(cmpd)
     session.commit()
-    obj = CompartmentSerializer(namespaces={}, biology_qualifiers={}).serialize(cmpd)
+    obj = CompartmentBuilder(namespaces={}, biology_qualifiers={}).build_io(cmpd)
     assert obj.id == "1"
 
 
-def test_serialize_full_compartment(session, biology_qualifiers, namespaces):
+def test_build_full_io_compartment(session, biology_qualifiers, namespaces):
     """Expect that a fully fleshed out compartment can be serialized."""
     compartment = Compartment(notes="bla bla bla")
     go = namespaces["go"]
@@ -48,34 +48,36 @@ def test_serialize_full_compartment(session, biology_qualifiers, namespaces):
     ]
     session.add(compartment)
     session.commit()
-    obj = CompartmentSerializer(
+    obj = CompartmentBuilder(
         biology_qualifiers=biology_qualifiers, namespaces=namespaces
-    ).serialize(compartment)
+    ).build_io(compartment)
     assert obj.id == "1"
     assert obj.notes == "bla bla bla"
     assert "go" in obj.names
-    assert set(obj.names["go"]) == {"cytosol", "cytoplasm"}
-    assert obj.annotation == {"go": [("is", "GO:0005737")]}
+    assert {n.name for n in obj.names["go"]} == {"cytosol", "cytoplasm"}
+    assert {a.identifier for a in obj.annotation["go"]} == {"GO:0005737"}
 
 
-def test_deserialize_full_compartment(session, biology_qualifiers, namespaces):
+def test_build_full_orm_compartment(session, biology_qualifiers, namespaces):
     """Expect that a fully fleshed out compartment can be deserialized."""
     obj = CompartmentModel(
         **{
             "id": "1",
             "notes": "bla bla bla",
-            "names": {"go": ["cytosol", "cytoplasm"]},
-            "annotation": {"go": [["is", "GO:0005737"]]},
+            "names": {"go": [{"name": "cytosol"}, {"name": "cytoplasm"}]},
+            "annotation": {
+                "go": [{"biology_qualifier": "is", "identifier": "GO:0005737"}]
+            },
         }
     )
-    compartment = CompartmentSerializer(
+    compartment = CompartmentBuilder(
         biology_qualifiers=biology_qualifiers, namespaces=namespaces
-    ).deserialize(obj)
+    ).build_orm(obj)
     session.add(compartment)
     session.commit()
     assert compartment.notes == "bla bla bla"
     assert "go" in {n.namespace.prefix for n in compartment.names}
     assert {n.name for n in compartment.names} == {"cytosol", "cytoplasm"}
-    for ann, expected in zip(compartment.annotation, [("is", "GO:0005737")]):
+    for ann, expected in zip(compartment.annotation, ("GO:0005737",)):
         assert ann.namespace.prefix == "go"
-        assert (ann.biology_qualifier.qualifier, ann.identifier) == expected
+        assert ann.identifier == expected
