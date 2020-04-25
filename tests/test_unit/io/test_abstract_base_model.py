@@ -38,7 +38,7 @@ def test_empty_init():
 
 
 @pytest.mark.parametrize(
-    "attributes", [{"id": "1"}, {"sbo_term": "SBO:007"}, {"notes": "bla bla bla"},],
+    "attributes", [{"id": "1"}, {"sbo_term": "SBO:007"}, {"notes": "bla bla bla"}],
 )
 def test_init(attributes):
     """Expect that the object is properly initialized."""

@@ -42,7 +42,10 @@ class AbstractComponentAnnotation(ABC):
         biology_qualifier: BiologyQualifier,
         namespace: Namespace,
         is_deprecated: bool = False,
+        **kwargs
     ) -> None:
+        """Define the attributes for the abstract class."""
+        super().__init__(**kwargs)
         self.identifier = identifier
         self.biology_qualifier = biology_qualifier
         self.namespace = namespace
@@ -53,8 +56,10 @@ class AbstractComponentName(ABC):
     """Define an abstract base for component names."""
 
     def __init__(
-        self, *, name: str, namespace: Namespace, is_preferred: bool = False
+        self, *, name: str, namespace: Namespace, is_preferred: bool = False, **kwargs
     ) -> None:
+        """Define the attributes for the abstract class."""
+        super().__init__(**kwargs)
         self.name = name
         self.namespace = namespace
         self.is_preferred = is_preferred
@@ -68,7 +73,10 @@ class AbstractComponent(ABC):
         *,
         names: List[AbstractComponentName],
         annotation: List[AbstractComponentAnnotation],
+        **kwargs
     ) -> None:
+        """Define the attributes for the abstract class."""
+        super().__init__(**kwargs)
         self.names = names
         self.annotation = annotation
 
