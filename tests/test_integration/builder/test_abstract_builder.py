@@ -26,7 +26,6 @@ from cobra_component_models.orm import (
     AbstractComponent,
     AbstractComponentAnnotation,
     AbstractComponentName,
-    BiologyQualifier,
     CompartmentAnnotation,
     CompartmentName,
     CompoundAnnotation,
@@ -51,7 +50,7 @@ class MockBuilder(AbstractBuilder):
 
 def test_init(session):
     """Expect that a direct child can be initialized."""
-    MockBuilder(namespaces={}, biology_qualifiers={})
+    MockBuilder(namespaces={})
 
 
 @pytest.mark.parametrize("cls", [CompartmentName, CompoundName, ReactionName])
@@ -61,9 +60,7 @@ def test_build_io_names(namespaces, cls: Type[AbstractComponentName]):
     orm_names = [
         cls(name=n, namespace=chebi) for n in ("ethanol", "Aethanol", "Alkohol")
     ]
-    io_names = MockBuilder(namespaces={}, biology_qualifiers={}).build_io_names(
-        orm_names
-    )
+    io_names = MockBuilder(namespaces={}).build_io_names(orm_names)
     assert {n.name for n in io_names["chebi"]} == {"ethanol", "Aethanol", "Alkohol"}
 
 
@@ -71,20 +68,16 @@ def test_build_io_names(namespaces, cls: Type[AbstractComponentName]):
     "cls", [CompartmentAnnotation, CompoundAnnotation, ReactionAnnotation]
 )
 def test_build_io_annotation(
-    biology_qualifiers: Dict[str, BiologyQualifier],
     namespaces: Dict[str, Namespace],
     cls: Type[AbstractComponentAnnotation],
 ):
     """Expect that component annotation is serialized correctly."""
     chebi = namespaces["chebi"]
-    qual = biology_qualifiers["is"]
     orm_annotation = [
-        cls(identifier=i, namespace=chebi, biology_qualifier=qual)
+        cls(identifier=i, namespace=chebi)
         for i in ("CHEBI:16236", "CHEBI:44594", "CHEBI:42377")
     ]
-    io_annotation = MockBuilder(
-        namespaces={}, biology_qualifiers={}
-    ).build_io_annotation(orm_annotation)
+    io_annotation = MockBuilder(namespaces={}).build_io_annotation(orm_annotation)
     assert {a.identifier for a in io_annotation["chebi"]} == {
         "CHEBI:16236",
         "CHEBI:44594",
@@ -93,9 +86,7 @@ def test_build_io_annotation(
 
 
 @pytest.mark.parametrize("cls", [CompartmentName, CompoundName, ReactionName])
-def test_build_orm_names(
-    biology_qualifiers, namespaces, cls: Type[AbstractComponentName]
-):
+def test_build_orm_names(namespaces, cls: Type[AbstractComponentName]):
     """Expect that component names are deserialized correctly."""
     obj = {
         "chebi": [
@@ -104,9 +95,7 @@ def test_build_orm_names(
             NameModel(name="Alkohol"),
         ]
     }
-    names = MockBuilder(
-        biology_qualifiers=biology_qualifiers, namespaces=namespaces
-    ).build_orm_names(obj, cls)
+    names = MockBuilder(namespaces=namespaces).build_orm_names(obj, cls)
     for name, expected in zip(names, ["ethanol", "Aethanol", "Alkohol"]):
         assert name.namespace.prefix == "chebi"
         assert name.name == expected
@@ -116,34 +105,20 @@ def test_build_orm_names(
 @pytest.mark.parametrize(
     "cls", [CompartmentAnnotation, CompoundAnnotation, ReactionAnnotation]
 )
-def test_deserialize_annotation(
-    biology_qualifiers, namespaces, cls: Type[AbstractComponentAnnotation]
-):
+def test_deserialize_annotation(namespaces, cls: Type[AbstractComponentAnnotation]):
     """Expect that component annotation is deserialized correctly."""
     obj = {
         "chebi": [
-            AnnotationModel(
-                identifier="CHEBI:16236",
-                biology_qualifier="is",
-            ),
-            AnnotationModel(
-                identifier="CHEBI:44594",
-                biology_qualifier="is",
-            ),
-            AnnotationModel(
-                identifier="CHEBI:42377",
-                biology_qualifier="is",
-            ),
+            AnnotationModel(identifier="CHEBI:16236"),
+            AnnotationModel(identifier="CHEBI:44594"),
+            AnnotationModel(identifier="CHEBI:42377"),
         ]
     }
-    annotation = MockBuilder(
-        biology_qualifiers=biology_qualifiers, namespaces=namespaces
-    ).build_orm_annotation(obj, cls)
+    annotation = MockBuilder(namespaces=namespaces).build_orm_annotation(obj, cls)
     for ann, expected in zip(
         annotation,
         ("CHEBI:16236", "CHEBI:44594", "CHEBI:42377"),
     ):
         assert ann.namespace.prefix == "chebi"
-        assert ann.biology_qualifier.qualifier == "is"
         assert ann.identifier == expected
         assert ann.is_deprecated is False

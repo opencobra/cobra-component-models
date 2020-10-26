@@ -55,18 +55,12 @@ class CompoundBuilder(AbstractBuilder):
         names = self.build_io_names(orm_model.names)
         annotation = self.build_io_annotation(orm_model.annotation)
         if orm_model.inchi:
-            annotation["inchi"] = [
-                AnnotationModel(biology_qualifier="is", identifier=orm_model.inchi)
-            ]
+            annotation["inchi"] = [AnnotationModel(identifier=orm_model.inchi)]
         if orm_model.inchi_key:
-            annotation["inchikey"] = [
-                AnnotationModel(biology_qualifier="is", identifier=orm_model.inchi_key)
-            ]
+            annotation["inchikey"] = [AnnotationModel(identifier=orm_model.inchi_key)]
         if orm_model.smiles:
             # SMILES are not yet Identifiers.org conform.
-            annotation["smiles"] = [
-                AnnotationModel(biology_qualifier="is", identifier=orm_model.smiles)
-            ]
+            annotation["smiles"] = [AnnotationModel(identifier=orm_model.smiles)]
         return CompoundModel(
             id=str(orm_model.id),
             notes=orm_model.notes,

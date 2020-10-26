@@ -24,7 +24,6 @@ from ..orm import (
     AbstractComponent,
     AbstractComponentAnnotation,
     AbstractComponentName,
-    BiologyQualifier,
     Namespace,
 )
 
@@ -32,20 +31,12 @@ from ..orm import (
 class AbstractBuilder(ABC):
     """Define an abstract builder."""
 
-    def __init__(
-        self,
-        *,
-        biology_qualifiers: Dict[str, BiologyQualifier],
-        namespaces: Dict[str, Namespace],
-        **kwargs
-    ):
+    def __init__(self, *, namespaces: Dict[str, Namespace], **kwargs):
         """
         Initialize the abstract base builder.
 
         Parameters
         ----------
-        biology_qualifiers : dict
-            A mapping from biology qualifiers to their database instances.
         namespaces : dict
             A mapping from namespace prefixes to their database instances.
 
@@ -56,7 +47,6 @@ class AbstractBuilder(ABC):
 
         """
         super().__init__(**kwargs)
-        self.biology_qualifiers = biology_qualifiers
         self.namespaces = namespaces
 
     @abstractmethod
@@ -85,7 +75,6 @@ class AbstractBuilder(ABC):
             obj.setdefault(ann.namespace.prefix, []).append(
                 AnnotationModel(
                     identifier=ann.identifier,
-                    biology_qualifier=ann.biology_qualifier.qualifier,
                     is_deprecated=ann.is_deprecated,
                 )
             )
@@ -123,11 +112,9 @@ class AbstractBuilder(ABC):
         for prefix, annotations in annotation_data.items():
             namespace = self.namespaces[prefix]
             for ann in annotations:
-                qualifier = self.biology_qualifiers[ann.biology_qualifier]
                 result.append(
                     cls(
                         identifier=ann.identifier,
-                        biology_qualifier=qualifier,
                         is_deprecated=ann.is_deprecated,
                         namespace=namespace,
                     )

@@ -8,7 +8,6 @@ notes = "ethanol + NAD(+) = acetaldehyde + H(+) + NADH"
 name = "ethanol oxidoreductase"
 
 [[dehydrogenase.annotation.rhea]]
-biology_qualifier = "is"
 identifier = "25290"
 
 [dehydrogenase.reactants.ethanol]

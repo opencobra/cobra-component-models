@@ -19,7 +19,6 @@
 import pytest
 
 from cobra_component_models.orm import (
-    BiologyQualifier,
     Namespace,
     Reaction,
     ReactionAnnotation,
@@ -52,11 +51,8 @@ def test_annotation(session):
     """Expect that annotations can be added to a reaction."""
     reaction = Reaction()
     namespace = Namespace(miriam_id="MIR:00000082", prefix="rhea", pattern=r"^\d{5}$")
-    qualifier = BiologyQualifier(qualifier="is")
     reaction.annotation.append(
-        ReactionAnnotation(
-            identifier="25290", namespace=namespace, biology_qualifier=qualifier
-        )
+        ReactionAnnotation(identifier="25290", namespace=namespace)
     )
     session.add(reaction)
     session.commit()

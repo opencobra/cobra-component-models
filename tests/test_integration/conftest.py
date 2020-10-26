@@ -27,13 +27,7 @@ from sqlalchemy.orm import sessionmaker
 
 from cobra_component_models.builder import CompartmentBuilder, CompoundBuilder
 from cobra_component_models.io import CompartmentModel, CompoundModel
-from cobra_component_models.orm import (
-    Base,
-    BiologyQualifier,
-    Compartment,
-    Compound,
-    Namespace,
-)
+from cobra_component_models.orm import Base, Compartment, Compound, Namespace
 
 
 data_path = Path(__file__).parent / "data"
@@ -78,13 +72,6 @@ def session(connection: Connection) -> Session:
     finally:
         session.close()
         transaction.rollback()
-
-
-@pytest.fixture(scope="function")
-def biology_qualifiers(session: Session) -> Dict[str, BiologyQualifier]:
-    """Return a map from biology qualifiers to database instances."""
-    BiologyQualifier.load(session)
-    return BiologyQualifier.get_map(session)
 
 
 @pytest.fixture(scope="session")
@@ -134,14 +121,11 @@ def namespaces(session: Session, namespaces_data: dict) -> Dict[str, Namespace]:
 @pytest.fixture(scope="function")
 def id2compartments(
     session: Session,
-    biology_qualifiers: Dict[str, BiologyQualifier],
     namespaces: Dict[str, Namespace],
     compartments_data: dict,
 ) -> Dict[str, Compartment]:
     """Return a map from identifier to compartment database instance."""
-    builder = CompartmentBuilder(
-        biology_qualifiers=biology_qualifiers, namespaces=namespaces
-    )
+    builder = CompartmentBuilder(namespaces=namespaces)
     result = {}
     for id, data in compartments_data.items():
         model = CompartmentModel.parse_obj(data)
@@ -161,14 +145,11 @@ def compartments2id(id2compartments: Dict[str, Compartment]) -> Dict[Compartment
 @pytest.fixture(scope="function")
 def id2compounds(
     session: Session,
-    biology_qualifiers: Dict[str, BiologyQualifier],
     namespaces: Dict[str, Namespace],
     compounds_data: dict,
 ) -> Dict[str, Compound]:
     """Return a map from identifier to compound database instance."""
-    builder = CompoundBuilder(
-        biology_qualifiers=biology_qualifiers, namespaces=namespaces
-    )
+    builder = CompoundBuilder(namespaces=namespaces)
     result = {}
     for id, data in compounds_data.items():
         model = CompoundModel.parse_obj(data)

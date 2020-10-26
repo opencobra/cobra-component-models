@@ -49,8 +49,8 @@ def test_empty_init():
             "id": "1",
             "annotation": {
                 "prefix": [
-                    {"biology_qualifier": "is", "identifier": "one"},
-                    {"biology_qualifier": "is", "identifier": "two"},
+                    {"identifier": "one"},
+                    {"identifier": "two"},
                 ]
             },
         },

@@ -19,7 +19,6 @@
 from abc import ABC
 from typing import List
 
-from .biology_qualifier import BiologyQualifier
 from .compartment import Compartment
 from .compartment_annotation import CompartmentAnnotation
 from .compartment_name import CompartmentName
@@ -39,7 +38,6 @@ class AbstractComponentAnnotation(ABC):
         self,
         *,
         identifier: str,
-        biology_qualifier: BiologyQualifier,
         namespace: Namespace,
         is_deprecated: bool = False,
         **kwargs
@@ -47,7 +45,6 @@ class AbstractComponentAnnotation(ABC):
         """Define the attributes for the abstract class."""
         super().__init__(**kwargs)
         self.identifier = identifier
-        self.biology_qualifier = biology_qualifier
         self.namespace = namespace
         self.is_deprecated = is_deprecated
 

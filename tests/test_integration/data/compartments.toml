@@ -11,5 +11,4 @@ name = "cytosol"
 name = "cytoplasm"
 
 [[c.annotation.go]]
-biology_qualifier = "is"
 identifier = "GO:0005737"

@@ -16,17 +16,9 @@
 """Provide a component annotation model."""
 
 
-from importlib.resources import open_text
+from pydantic import Field
 
-from pydantic import Field, validator
-
-from .. import data
 from .io_base import IOBase
-
-
-# A list of qualifiers taken from https://co.mbine.org/standards/qualifiers.
-with open_text(data, "biology_qualifiers.txt") as handler:
-    BIOLOGY_QUALIFIERS = frozenset(line.strip() for line in handler.readlines())
 
 
 class AnnotationModel(IOBase):
@@ -38,16 +30,5 @@ class AnnotationModel(IOBase):
 
     """
 
-    biology_qualifier: str = Field(..., alias="biologyQualifier")
     identifier: str
     is_deprecated: bool = Field(False, alias="isDeprecated")
-
-    @validator("biology_qualifier")
-    def biology_qualifier_must_be_known(cls, qualifier: str):
-        """Validate and transform the given biology qualifier."""
-        if qualifier not in BIOLOGY_QUALIFIERS:
-            raise ValueError(
-                "The qualifier must be one of the valid biology qualifiers defined "
-                "at https://co.mbine.org/standards/qualifiers."
-            )
-        return qualifier

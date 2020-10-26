@@ -34,14 +34,13 @@ def test_build_default_io_reaction(session):
     reaction = Reaction()
     session.add(reaction)
     session.commit()
-    obj = ReactionBuilder(namespaces={}, biology_qualifiers={}).build_io(reaction)
+    obj = ReactionBuilder(namespaces={}).build_io(reaction)
     assert obj.id == "1"
 
 
 @pytest.mark.parametrize("reaction_name", ["dehydrogenase"])
 def test_build_full_io_reaction(
     session,
-    biology_qualifiers,
     namespaces,
     id2compartments,
     id2compounds,
@@ -58,9 +57,8 @@ def test_build_full_io_reaction(
         ReactionName(name=n, namespace=rhea)
         for n in glom(reaction_data, ("names.rhea", ["name"]))
     ]
-    qual = biology_qualifiers["is"]
     reaction.annotation = [
-        ReactionAnnotation(identifier=i, namespace=rhea, biology_qualifier=qual)
+        ReactionAnnotation(identifier=i, namespace=rhea)
         for i in glom(reaction_data, ("annotation.rhea", ["identifier"]))
     ]
     for compound_id, part in reaction_data["reactants"].items():
@@ -84,7 +82,6 @@ def test_build_full_io_reaction(
     session.add(reaction)
     session.commit()
     obj = ReactionBuilder(
-        biology_qualifiers=biology_qualifiers,
         namespaces=namespaces,
         compartment2id=compartments2id,
         compound2id=compounds2id,
@@ -104,7 +101,6 @@ def test_build_full_io_reaction(
 @pytest.mark.parametrize("reaction_name", ["dehydrogenase"])
 def test_build_full_orm_reaction(
     session,
-    biology_qualifiers,
     namespaces,
     id2compartments,
     id2compounds,
@@ -117,7 +113,6 @@ def test_build_full_orm_reaction(
     reaction_data = reactions_data[reaction_name]
     obj = ReactionModel.parse_obj(reaction_data)
     reaction = ReactionBuilder(
-        biology_qualifiers=biology_qualifiers,
         namespaces=namespaces,
         id2compartment=id2compartments,
         id2compound=id2compounds,

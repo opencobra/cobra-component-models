@@ -19,7 +19,6 @@
 import pytest
 
 from cobra_component_models.orm import (
-    BiologyQualifier,
     Compound,
     CompoundAnnotation,
     CompoundName,
@@ -64,11 +63,8 @@ def test_annotation(session):
     namespace = Namespace(
         miriam_id="MIR:00000002", prefix="chebi", pattern=r"^CHEBI:\d+$"
     )
-    qualifier = BiologyQualifier(qualifier="is")
     compound.annotation.append(
-        CompoundAnnotation(
-            identifier="CHEBI:16236", namespace=namespace, biology_qualifier=qualifier
-        )
+        CompoundAnnotation(identifier="CHEBI:16236", namespace=namespace)
     )
     session.add(compound)
     session.commit()

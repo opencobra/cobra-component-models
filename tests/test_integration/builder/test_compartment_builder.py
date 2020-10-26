@@ -30,27 +30,23 @@ def test_build_io_default_compartment(session):
     cmpd = Compartment()
     session.add(cmpd)
     session.commit()
-    obj = CompartmentBuilder(namespaces={}, biology_qualifiers={}).build_io(cmpd)
+    obj = CompartmentBuilder(namespaces={}).build_io(cmpd)
     assert obj.id == "1"
 
 
-def test_build_full_io_compartment(session, biology_qualifiers, namespaces):
+def test_build_full_io_compartment(session, namespaces):
     """Expect that a fully fleshed out compartment can be serialized."""
     compartment = Compartment(notes="bla bla bla")
     go = namespaces["go"]
     compartment.names = [
         CompartmentName(name=n, namespace=go) for n in ["cytosol", "cytoplasm"]
     ]
-    qual = biology_qualifiers["is"]
     compartment.annotation = [
-        CompartmentAnnotation(identifier=i, namespace=go, biology_qualifier=qual)
-        for i in ["GO:0005737"]
+        CompartmentAnnotation(identifier=i, namespace=go) for i in ["GO:0005737"]
     ]
     session.add(compartment)
     session.commit()
-    obj = CompartmentBuilder(
-        biology_qualifiers=biology_qualifiers, namespaces=namespaces
-    ).build_io(compartment)
+    obj = CompartmentBuilder(namespaces=namespaces).build_io(compartment)
     assert obj.id == "1"
     assert obj.notes == "bla bla bla"
     assert "go" in obj.names
@@ -58,21 +54,17 @@ def test_build_full_io_compartment(session, biology_qualifiers, namespaces):
     assert {a.identifier for a in obj.annotation["go"]} == {"GO:0005737"}
 
 
-def test_build_full_orm_compartment(session, biology_qualifiers, namespaces):
+def test_build_full_orm_compartment(session, namespaces):
     """Expect that a fully fleshed out compartment can be deserialized."""
     obj = CompartmentModel.parse_obj(
         {
             "id": "1",
             "notes": "bla bla bla",
             "names": {"go": [{"name": "cytosol"}, {"name": "cytoplasm"}]},
-            "annotation": {
-                "go": [{"biology_qualifier": "is", "identifier": "GO:0005737"}]
-            },
+            "annotation": {"go": [{"identifier": "GO:0005737"}]},
         }
     )
-    compartment = CompartmentBuilder(
-        biology_qualifiers=biology_qualifiers, namespaces=namespaces
-    ).build_orm(obj)
+    compartment = CompartmentBuilder(namespaces=namespaces).build_orm(obj)
     session.add(compartment)
     session.commit()
     assert compartment.notes == "bla bla bla"

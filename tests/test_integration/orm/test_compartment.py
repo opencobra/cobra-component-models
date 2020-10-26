@@ -19,7 +19,6 @@
 import pytest
 
 from cobra_component_models.orm import (
-    BiologyQualifier,
     Compartment,
     CompartmentAnnotation,
     CompartmentName,
@@ -50,11 +49,8 @@ def test_annotation(session):
     """Expect that names can be added to a compartment."""
     compartment = Compartment()
     namespace = Namespace(miriam_id="MIR:00000022", prefix="go", pattern=r"^GO:\d{7}$")
-    qualifier = BiologyQualifier(qualifier="is")
     compartment.annotation.append(
-        CompartmentAnnotation(
-            identifier="GO:0005737", namespace=namespace, biology_qualifier=qualifier
-        )
+        CompartmentAnnotation(identifier="GO:0005737", namespace=namespace)
     )
     session.add(compartment)
     session.commit()

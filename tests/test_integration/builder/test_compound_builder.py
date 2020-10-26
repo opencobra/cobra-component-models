@@ -26,11 +26,11 @@ def test_build_default_io_compound(session):
     cmpd = Compound()
     session.add(cmpd)
     session.commit()
-    obj = CompoundBuilder(namespaces={}, biology_qualifiers={}).build_io(cmpd)
+    obj = CompoundBuilder(namespaces={}).build_io(cmpd)
     assert obj.id == "1"
 
 
-def test_build_full_io_compound(session, biology_qualifiers, namespaces):
+def test_build_full_io_compound(session, namespaces):
     """Expect that a fully fleshed out compound can be serialized."""
     chebi = namespaces["chebi"]
     cmpd = Compound(
@@ -45,16 +45,13 @@ def test_build_full_io_compound(session, biology_qualifiers, namespaces):
         CompoundName(name=n, namespace=chebi)
         for n in ("ethanol", "Aethanol", "Alkohol")
     ]
-    qual = biology_qualifiers["is"]
     cmpd.annotation = [
-        CompoundAnnotation(identifier=i, namespace=chebi, biology_qualifier=qual)
+        CompoundAnnotation(identifier=i, namespace=chebi)
         for i in ("CHEBI:16236", "CHEBI:44594", "CHEBI:42377")
     ]
     session.add(cmpd)
     session.commit()
-    obj = CompoundBuilder(
-        biology_qualifiers=biology_qualifiers, namespaces=namespaces
-    ).build_io(cmpd)
+    obj = CompoundBuilder(namespaces=namespaces).build_io(cmpd)
     assert obj.id == "1"
     assert obj.charge == 0
     assert obj.chemical_formula == "C2H6O"
@@ -72,7 +69,7 @@ def test_build_full_io_compound(session, biology_qualifiers, namespaces):
     }
 
 
-def test_build_full_orm_compound(session, biology_qualifiers, namespaces):
+def test_build_full_orm_compound(session, namespaces):
     """Expect that a fully fleshed out compound can be deserialized."""
     obj = CompoundModel.parse_obj(
         {
@@ -87,31 +84,23 @@ def test_build_full_orm_compound(session, biology_qualifiers, namespaces):
             },
             "annotation": {
                 "chebi": [
-                    {"biology_qualifier": "is", "identifier": "CHEBI:16236"},
-                    {"biology_qualifier": "is", "identifier": "CHEBI:44594"},
-                    {"biology_qualifier": "is", "identifier": "CHEBI:42377"},
+                    {"identifier": "CHEBI:16236"},
+                    {"identifier": "CHEBI:44594"},
+                    {"identifier": "CHEBI:42377"},
                 ],
-                "inchi": [
-                    {
-                        "biology_qualifier": "is",
-                        "identifier": "InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3",
-                    }
-                ],
+                "inchi": [{"identifier": "InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3"}],
                 "inchikey": [
                     {
-                        "biology_qualifier": "is",
                         "identifier": "LFQSCWFLJHTTHZ-UHFFFAOYSA-N",
                     }
                 ],
-                "smiles": [{"biology_qualifier": "is", "identifier": "CCO"}],
+                "smiles": [{"identifier": "CCO"}],
             },
             "charge": 0.0,
             "chemicalFormula": "C2H6O",
         }
     )
-    cmpd = CompoundBuilder(
-        biology_qualifiers=biology_qualifiers, namespaces=namespaces
-    ).build_orm(obj)
+    cmpd = CompoundBuilder(namespaces=namespaces).build_orm(obj)
     session.add(cmpd)
     session.commit()
     assert cmpd.inchi == "InChI=1S/C2H6O/c1-2-3/h3H,2H2,1H3"

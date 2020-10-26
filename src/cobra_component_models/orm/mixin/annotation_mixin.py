@@ -39,8 +39,6 @@ class AnnotationMixin:
         useful for identifying components from old data.
     namespace_id : int
         The foreign key of the related Identifiers.org namespace.
-    biology_qualifier_id : int
-        The foreign key of the related biology qualifier.
 
     """
 
@@ -61,16 +59,6 @@ class AnnotationMixin:
     def namespace(cls):
         """Defer the namespace field instantiation."""
         return relationship("Namespace")
-
-    @declared_attr
-    def biology_qualifier_id(cls):
-        """Defer the biology qualifier id field instantiation."""
-        return Column(Integer, ForeignKey("biology_qualifiers.id"), nullable=False)
-
-    @declared_attr
-    def biology_qualifier(cls):
-        """Defer the biology qualifier field instantiation."""
-        return relationship("BiologyQualifier")
 
     # FIXME: The namespace attribute is not initialized at the time of validation.
     #  Try to use events maybe

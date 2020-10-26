@@ -17,7 +17,6 @@
 
 
 from .base import Base
-from .biology_qualifier import BiologyQualifier
 from .namespace import Namespace
 from .compartment_annotation import CompartmentAnnotation
 from .compartment_name import CompartmentName
