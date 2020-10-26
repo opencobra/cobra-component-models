@@ -16,7 +16,7 @@
 # limitations under the License.
 
 
-"""Set up the COBRA Component Models package."""
+"""Set up the COBRA component models package."""
 
 
 import versioneer

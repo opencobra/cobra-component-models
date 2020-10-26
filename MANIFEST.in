@@ -1,4 +1,3 @@
 include README.rst
 include LICENSE
-include versioneer.py
 include src/cobra_component_models/_version.py

@@ -6,7 +6,7 @@
 
 ## Apply code quality assurance tools.
 qa:
-	isort --recursive src/cobra_component_models tests/ setup.py
+	isort src/cobra_component_models tests/ setup.py
 	black src/cobra_component_models tests/ setup.py
 
 ## Prepare a release by generating the automatic code documentation.
