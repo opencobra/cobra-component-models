@@ -122,16 +122,26 @@ def test_deserialize_annotation(
     """Expect that component annotation is deserialized correctly."""
     obj = {
         "chebi": [
-            AnnotationModel(identifier="CHEBI:16236", biology_qualifier="is",),
-            AnnotationModel(identifier="CHEBI:44594", biology_qualifier="is",),
-            AnnotationModel(identifier="CHEBI:42377", biology_qualifier="is",),
+            AnnotationModel(
+                identifier="CHEBI:16236",
+                biology_qualifier="is",
+            ),
+            AnnotationModel(
+                identifier="CHEBI:44594",
+                biology_qualifier="is",
+            ),
+            AnnotationModel(
+                identifier="CHEBI:42377",
+                biology_qualifier="is",
+            ),
         ]
     }
     annotation = MockBuilder(
         biology_qualifiers=biology_qualifiers, namespaces=namespaces
     ).build_orm_annotation(obj, cls)
     for ann, expected in zip(
-        annotation, ("CHEBI:16236", "CHEBI:44594", "CHEBI:42377"),
+        annotation,
+        ("CHEBI:16236", "CHEBI:44594", "CHEBI:42377"),
     ):
         assert ann.namespace.prefix == "chebi"
         assert ann.biology_qualifier.qualifier == "is"

@@ -76,7 +76,8 @@ class AbstractBuilder(ABC):
         return obj
 
     def build_io_annotation(
-        self, annotation: List[AbstractComponentAnnotation],
+        self,
+        annotation: List[AbstractComponentAnnotation],
     ) -> Dict[str, List[AnnotationModel]]:
         """Build IO model annotation from ORM annotation."""
         obj = {}
