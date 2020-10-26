@@ -26,7 +26,7 @@ from .io_base import IOBase
 
 # A list of qualifiers taken from https://co.mbine.org/standards/qualifiers.
 with open_text(data, "biology_qualifiers.txt") as handler:
-    BIOLOGY_QUALIFIERS = frozenset(l.strip() for l in handler.readlines())
+    BIOLOGY_QUALIFIERS = frozenset(line.strip() for line in handler.readlines())
 
 
 class AnnotationModel(IOBase):

@@ -52,7 +52,7 @@ class BiologyQualifier(Base):
     def load(cls, session):
         """Load all known biology qualifiers into the given database."""
         with open_text(data, "biology_qualifiers.txt") as handler:
-            qualifiers = [l.strip() for l in handler.readlines()]
+            qualifiers = [line.strip() for line in handler.readlines()]
         for qual in qualifiers:
             if (
                 qual

@@ -25,7 +25,7 @@ from cobra_component_models.io import AnnotationModel
 
 
 with open_text(data, "biology_qualifiers.txt") as handler:
-    BIOLOGY_QUALIFIERS = [l.strip() for l in handler.readlines()]
+    BIOLOGY_QUALIFIERS = [line.strip() for line in handler.readlines()]
 
 
 @pytest.mark.parametrize(

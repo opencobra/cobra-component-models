@@ -50,6 +50,6 @@ def test_load(session):
     """Expect that all biology qualifiers are inserted."""
     BiologyQualifier.load(session)
     with open_text(data, "biology_qualifiers.txt") as handle:
-        expected = {l.strip() for l in handle.readlines()}
+        expected = {line.strip() for line in handle.readlines()}
     qualifiers = {bq.qualifier for bq in session.query(BiologyQualifier.qualifier)}
     assert qualifiers == expected
