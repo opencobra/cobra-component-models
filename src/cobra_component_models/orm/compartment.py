@@ -41,5 +41,9 @@ class Compartment(Base):
     __tablename__ = "compartments"
 
     notes: Optional[str] = Column(String, nullable=True)
-    names: List[CompartmentName] = relationship("CompartmentName")
-    annotation: List[CompartmentAnnotation] = relationship("CompartmentAnnotation")
+    names: List[CompartmentName] = relationship(
+        "CompartmentName", cascade="all, delete-orphan"
+    )
+    annotation: List[CompartmentAnnotation] = relationship(
+        "CompartmentAnnotation", cascade="all, delete-orphan"
+    )

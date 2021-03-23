@@ -42,6 +42,12 @@ class Reaction(Base):
     __tablename__ = "reactions"
 
     notes: Optional[str] = Column(String, nullable=True)
-    names: List[ReactionName] = relationship("ReactionName")
-    annotation: List[ReactionAnnotation] = relationship("ReactionAnnotation")
-    participants: List[Participant] = relationship("Participant")
+    names: List[ReactionName] = relationship(
+        "ReactionName", cascade="all, delete-orphan"
+    )
+    annotation: List[ReactionAnnotation] = relationship(
+        "ReactionAnnotation", cascade="all, delete-orphan"
+    )
+    participants: List[Participant] = relationship(
+        "Participant", cascade="all, delete-orphan"
+    )

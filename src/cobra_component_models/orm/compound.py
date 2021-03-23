@@ -65,8 +65,12 @@ class Compound(Base):
     charge: Optional[float] = Column(Float, nullable=True)
     mass: Optional[float] = Column(Float, nullable=True)
     notes: Optional[str] = Column(String, nullable=True)
-    names: List[CompoundName] = relationship("CompoundName")
-    annotation: List[CompoundAnnotation] = relationship("CompoundAnnotation")
+    names: List[CompoundName] = relationship(
+        "CompoundName", cascade="all, delete-orphan"
+    )
+    annotation: List[CompoundAnnotation] = relationship(
+        "CompoundAnnotation", cascade="all, delete-orphan"
+    )
 
     def __repr__(self):
         """Return a string representation of the object."""
