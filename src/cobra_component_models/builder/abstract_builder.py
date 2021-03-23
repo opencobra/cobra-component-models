@@ -52,7 +52,7 @@ class AbstractBuilder(ABC):
     @abstractmethod
     def build_io(self, orm_model: AbstractComponent) -> AbstractBaseModel:
         """Build an IO model from an ORM model."""
-        pass
+        raise NotImplementedError()  # pragma: no cover
 
     def build_io_names(
         self, names: List[AbstractComponentName]
@@ -83,7 +83,7 @@ class AbstractBuilder(ABC):
     @abstractmethod
     def build_orm(self, data_model: AbstractBaseModel) -> AbstractComponent:
         """Build an ORM model from an IO model."""
-        pass
+        raise NotImplementedError()  # pragma: no cover
 
     def build_orm_names(
         self, names_data: Dict[str, List[NameModel]], cls: Type[AbstractComponentName]
