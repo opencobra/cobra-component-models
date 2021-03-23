@@ -63,6 +63,27 @@ def test_init(attributes):
     instance = Namespace(**attributes)
     for attr, value in attributes.items():
         assert getattr(instance, attr) == value
+    assert isinstance(instance.compiled_pattern, re.Pattern)
+
+
+@pytest.mark.parametrize(
+    "attributes",
+    [
+        {
+            "miriam_id": "MIR:00000258",
+            "prefix": "combine.specifications",
+            "pattern": r"^\w+(\-|\.|\w)*$",
+        }
+    ],
+)
+def test_init_on_load(attributes: dict, session):
+    """"""
+    instance = Namespace(**attributes)
+    session.add(instance)
+    session.commit()
+    del instance
+    reloaded = session.query(Namespace).first()
+    assert isinstance(reloaded.compiled_pattern, re.Pattern)
 
 
 @pytest.mark.parametrize(
