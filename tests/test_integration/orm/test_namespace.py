@@ -77,7 +77,7 @@ def test_init(attributes):
     ],
 )
 def test_init_on_load(attributes: dict, session):
-    """"""
+    """Expect that a regex pattern loaded from a database is compiled."""
     instance = Namespace(**attributes)
     session.add(instance)
     session.commit()
