@@ -33,3 +33,35 @@ def test_init(attributes):
     instance = Participant(**attributes)
     for attr, value in attributes.items():
         assert getattr(instance, attr) == value
+
+
+@pytest.mark.parametrize(
+    "attributes, expected",
+    [
+        (
+            {"stoichiometry": "1.0", "is_product": True},
+            "Participant(reaction=None, compound=None, stoichiometry=1.0)",
+        ),
+        (
+            {"stoichiometry": "1.0", "is_product": False},
+            "Participant(reaction=None, compound=None, stoichiometry=-1.0)",
+        ),
+        (
+            {"reaction_id": 22, "stoichiometry": "1.0", "is_product": True},
+            "Participant(reaction=22, compound=None, stoichiometry=1.0)",
+        ),
+        (
+            {
+                "reaction_id": 22,
+                "compound_id": 2,
+                "stoichiometry": "1.0",
+                "is_product": True,
+            },
+            "Participant(reaction=22, compound=2, stoichiometry=1.0)",
+        ),
+    ],
+)
+def test_repr(attributes: dict, expected: str):
+    """Expect a specific string representation of a compartment object."""
+    instance = Participant(**attributes)
+    assert repr(instance) == expected

@@ -35,3 +35,30 @@ def test_init(attributes):
     instance = ReactionAnnotation(namespace=namespace, **attributes)
     for attr, value in attributes.items():
         assert getattr(instance, attr) == value
+
+
+@pytest.mark.parametrize(
+    "attributes, expected",
+    [
+        (
+            {},
+            "ReactionAnnotation(reaction=None, identifier=None, namespace=None)",
+        ),
+        (
+            {"reaction_id": 22},
+            "ReactionAnnotation(reaction=22, identifier=None, namespace=None)",
+        ),
+        (
+            {"reaction_id": 22, "identifier": "glucose"},
+            "ReactionAnnotation(reaction=22, identifier=glucose, namespace=None)",
+        ),
+        (
+            {"reaction_id": 22, "identifier": "glucose", "namespace_id": 1},
+            "ReactionAnnotation(reaction=22, identifier=glucose, namespace=1)",
+        ),
+    ],
+)
+def test_repr(attributes: dict, expected: str):
+    """Expect a specific string representation of a reaction object."""
+    instance = ReactionAnnotation(**attributes)
+    assert repr(instance) == expected

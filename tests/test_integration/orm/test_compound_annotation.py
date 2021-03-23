@@ -37,3 +37,30 @@ def test_init(attributes):
     instance = CompoundAnnotation(namespace=namespace, **attributes)
     for attr, value in attributes.items():
         assert getattr(instance, attr) == value
+
+
+@pytest.mark.parametrize(
+    "attributes, expected",
+    [
+        (
+            {},
+            "CompoundAnnotation(compound=None, identifier=None, namespace=None)",
+        ),
+        (
+            {"compound_id": 22},
+            "CompoundAnnotation(compound=22, identifier=None, namespace=None)",
+        ),
+        (
+            {"compound_id": 22, "identifier": "glucose"},
+            "CompoundAnnotation(compound=22, identifier=glucose, namespace=None)",
+        ),
+        (
+            {"compound_id": 22, "identifier": "glucose", "namespace_id": 1},
+            "CompoundAnnotation(compound=22, identifier=glucose, namespace=1)",
+        ),
+    ],
+)
+def test_repr(attributes: dict, expected: str):
+    """Expect a specific string representation of a compound object."""
+    instance = CompoundAnnotation(**attributes)
+    assert repr(instance) == expected

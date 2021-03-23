@@ -46,6 +46,27 @@ def test_init(attributes):
         assert getattr(instance, attr) == value
 
 
+@pytest.mark.parametrize(
+    "attributes, expected",
+    [
+        ({}, "Compound(id=None, inchi_key=None)"),
+        ({"id": 22}, "Compound(id=22, inchi_key=None)"),
+        (
+            {"inchi_key": "LFQSCWFLJHTTHZ-UHFFFAOYSA-N"},
+            "Compound(id=None, inchi_key=LFQSCWFLJHTTHZ-UHFFFAOYSA-N)",
+        ),
+        (
+            {"id": 22, "inchi_key": "LFQSCWFLJHTTHZ-UHFFFAOYSA-N"},
+            "Compound(id=22, inchi_key=LFQSCWFLJHTTHZ-UHFFFAOYSA-N)",
+        ),
+    ],
+)
+def test__repr__(attributes: dict, expected: str):
+    """Expect a specific string representation of a compound object."""
+    instance = Compound(**attributes)
+    assert repr(instance) == expected
+
+
 def test_names(session):
     """Expect that names can be added to a compound."""
     compound = Compound()

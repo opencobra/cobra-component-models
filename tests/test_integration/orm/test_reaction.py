@@ -36,6 +36,16 @@ def test_init(attributes):
         assert getattr(instance, attr) == value
 
 
+@pytest.mark.parametrize(
+    "attributes, expected",
+    [({}, "Reaction(id=None)"), ({"id": 22}, "Reaction(id=22)")],
+)
+def test_repr(attributes: dict, expected: str):
+    """Expect a specific string representation of a reaction object."""
+    instance = Reaction(**attributes)
+    assert repr(instance) == expected
+
+
 def test_names(session):
     """Expect that names can be added to a reaction."""
     reaction = Reaction()

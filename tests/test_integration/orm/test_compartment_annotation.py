@@ -35,3 +35,30 @@ def test_init(attributes):
     instance = CompartmentAnnotation(namespace=namespace, **attributes)
     for attr, value in attributes.items():
         assert getattr(instance, attr) == value
+
+
+@pytest.mark.parametrize(
+    "attributes, expected",
+    [
+        (
+            {},
+            "CompartmentAnnotation(compartment=None, identifier=None, namespace=None)",
+        ),
+        (
+            {"compartment_id": 22},
+            "CompartmentAnnotation(compartment=22, identifier=None, namespace=None)",
+        ),
+        (
+            {"compartment_id": 22, "identifier": "glucose"},
+            "CompartmentAnnotation(compartment=22, identifier=glucose, namespace=None)",
+        ),
+        (
+            {"compartment_id": 22, "identifier": "glucose", "namespace_id": 1},
+            "CompartmentAnnotation(compartment=22, identifier=glucose, namespace=1)",
+        ),
+    ],
+)
+def test_repr(attributes: dict, expected: str):
+    """Expect a specific string representation of a compartment object."""
+    instance = CompartmentAnnotation(**attributes)
+    assert repr(instance) == expected

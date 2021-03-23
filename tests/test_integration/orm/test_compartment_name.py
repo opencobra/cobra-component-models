@@ -34,3 +34,30 @@ def test_init(attributes):
     instance = CompartmentName(**attributes)
     for attr, value in attributes.items():
         assert getattr(instance, attr) == value
+
+
+@pytest.mark.parametrize(
+    "attributes, expected",
+    [
+        (
+            {},
+            "CompartmentName(compartment=None, name=None, namespace=None)",
+        ),
+        (
+            {"compartment_id": 22},
+            "CompartmentName(compartment=22, name=None, namespace=None)",
+        ),
+        (
+            {"compartment_id": 22, "name": "glucose"},
+            "CompartmentName(compartment=22, name=glucose, namespace=None)",
+        ),
+        (
+            {"compartment_id": 22, "name": "glucose", "namespace_id": 1},
+            "CompartmentName(compartment=22, name=glucose, namespace=1)",
+        ),
+    ],
+)
+def test_repr(attributes: dict, expected: str):
+    """Expect a specific string representation of a compartment object."""
+    instance = CompartmentName(**attributes)
+    assert repr(instance) == expected

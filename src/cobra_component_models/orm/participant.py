@@ -51,5 +51,7 @@ class Participant(Base):
     def __repr__(self):
         """Return a string representation of the object."""
         return (
-            f"{type(self).__name__}(id={self.id}, stoichiometry={self.stoichiometry})"
+            f"{type(self).__name__}(reaction={self.reaction_id}, "
+            f"compound={self.compound_id}, stoichiometry="
+            f"{self.stoichiometry if self.is_product else f'-{self.stoichiometry}'})"
         )

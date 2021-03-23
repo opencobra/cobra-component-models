@@ -34,3 +34,30 @@ def test_init(attributes):
     instance = CompoundName(**attributes)
     for attr, value in attributes.items():
         assert getattr(instance, attr) == value
+
+
+@pytest.mark.parametrize(
+    "attributes, expected",
+    [
+        (
+            {},
+            "CompoundName(compound=None, name=None, namespace=None)",
+        ),
+        (
+            {"compound_id": 22},
+            "CompoundName(compound=22, name=None, namespace=None)",
+        ),
+        (
+            {"compound_id": 22, "name": "glucose"},
+            "CompoundName(compound=22, name=glucose, namespace=None)",
+        ),
+        (
+            {"compound_id": 22, "name": "glucose", "namespace_id": 1},
+            "CompoundName(compound=22, name=glucose, namespace=1)",
+        ),
+    ],
+)
+def test_repr(attributes: dict, expected: str):
+    """Expect a specific string representation of a compound object."""
+    instance = CompoundName(**attributes)
+    assert repr(instance) == expected

@@ -36,6 +36,16 @@ def test_init(attributes):
         assert getattr(instance, attr) == value
 
 
+@pytest.mark.parametrize(
+    "attributes, expected",
+    [({}, "Compartment(id=None)"), ({"id": 22}, "Compartment(id=22)")],
+)
+def test_repr(attributes: dict, expected: str):
+    """Expect a specific string representation of a compartment object."""
+    instance = Compartment(**attributes)
+    assert repr(instance) == expected
+
+
 def test_names(session):
     """Expect that names can be added to a compartment."""
     compartment = Compartment()
