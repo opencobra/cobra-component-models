@@ -41,7 +41,7 @@ class AbstractComponentAnnotation(ABC):
         namespace: Namespace,
         is_deprecated: bool = False,
         **kwargs
-    ) -> None:
+    ) -> None:  # pragma: no cover
         """Define the attributes for the abstract class."""
         super().__init__(**kwargs)
         self.identifier = identifier
@@ -54,7 +54,7 @@ class AbstractComponentName(ABC):
 
     def __init__(
         self, *, name: str, namespace: Namespace, is_preferred: bool = False, **kwargs
-    ) -> None:
+    ) -> None:  # pragma: no cover
         """Define the attributes for the abstract class."""
         super().__init__(**kwargs)
         self.name = name
@@ -71,7 +71,7 @@ class AbstractComponent(ABC):
         names: List[AbstractComponentName],
         annotation: List[AbstractComponentAnnotation],
         **kwargs
-    ) -> None:
+    ) -> None:  # pragma: no cover
         """Define the attributes for the abstract class."""
         super().__init__(**kwargs)
         self.names = names
